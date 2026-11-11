@@ -1,0 +1,481 @@
+{
+  "profile": {
+    "name": "Rynah Tadashi",
+    "legalName": "RAHAINGONANTENAINA Tafitasoa Riana Nandrianina",
+    "title": "DevOps & Cloud Engineer",
+    "tagline": "Automatisation | CI/CD | Cloud Infrastructure | Security",
+    "intro": "I build, automate and secure modern infrastructure to turn complex ideas into reliable solutions.",
+    "summary": "Titulaire d'une Licence en DevOps & Infrastructure Cloud, passionné d'automatisation, de numérisation et de cybersécurité. Curieux et motivé, je souhaite mettre mes compétences techniques au service de la transformation digitale des institutions, en contribuant à des projets structurants à fort impact national.",
+    "location": "Madagascar",
+    "email": "tafitarynah@gmail.com",
+    "linkedin": "https://www.linkedin.com/in/tadashi-rynah-b854a3312",
+    "github": "https://github.com/xxtadashixx",
+    "cvFile": "cv-rynah-tadashi.pdf",
+    "domains": [
+      "DevOps Engineering",
+      "Cloud Computing",
+      "Infrastructure Systems",
+      "CI/CD Automation",
+      "Containerization",
+      "Infrastructure as Code",
+      "IT Security",
+      "Monitoring"
+    ],
+    "softSkills": ["Rigueur & organisation", "Polyvalence", "Dynamisme", "Esprit d'équipe"],
+    "languages": ["Malagasy — langue maternelle", "Français — B2", "Anglais — A2"],
+    "associations": ["MAFAMI Antsiranana"]
+  },
+  "education": [
+    {
+      "title": "Licence — DevOps et infrastructure cloud",
+      "school": "GE-IT Université",
+      "year": "2025",
+      "detail": ""
+    },
+    {
+      "title": "Baccalauréat technique — Électronique (mention AB)",
+      "school": "LTP Alarobia",
+      "year": "2019",
+      "detail": ""
+    },
+    {
+      "title": "Brevet d'études professionnel — Télécommunication",
+      "school": "LTP Alarobia",
+      "year": "2018",
+      "detail": ""
+    }
+  ],
+  "experience": [
+    {
+      "role": "Stagiaire DevOps",
+      "company": "HaiRun Technology",
+      "period": "Juin – Septembre 2025",
+      "summary": "Mise en place d'une infrastructure de déploiement automatisé et sécurisé.",
+      "bullets": [
+        "Automatisation et déploiement : mise en place de pipelines CI/CD (GitLab CI, pipelines Parent/Child dynamiques), gestion des tâches planifiées avec Ansible et Crontab pour des déploiements fiables et rapides.",
+        "Containerisation et production : création et gestion des conteneurs Docker et Docker Compose pour les environnements de production.",
+        "Réseau et sécurité : Traefik, SSL/TLS, sécurisation des ports et des instances pour optimiser le trafic et protéger les services.",
+        "Supervision et observabilité : déploiement de Prometheus, Grafana et Alertmanager pour des dashboards en temps réel et des notifications de monitoring."
+      ]
+    }
+  ],
+  "skills": [
+    {
+      "category": "CI/CD",
+      "items": [
+        {
+          "name": "GitLab CI/CD",
+          "icon": "gitlab",
+          "description": "Pipelines d'intégration et de déploiement continus, dont des pipelines Parent/Child dynamiques.",
+          "evidence": "practiced"
+        },
+        {
+          "name": "GitHub / GitHub Actions",
+          "icon": "github",
+          "description": "Hébergement du code, collaboration Git et workflows d'automatisation.",
+          "evidence": "declared"
+        }
+      ]
+    },
+    {
+      "category": "Containerization",
+      "items": [
+        {
+          "name": "Docker",
+          "icon": "docker",
+          "description": "Création et gestion de conteneurs pour les environnements de production.",
+          "evidence": "practiced"
+        },
+        {
+          "name": "Docker Compose",
+          "icon": "docker",
+          "description": "Orchestration multi-conteneurs des services déployés.",
+          "evidence": "practiced"
+        },
+        {
+          "name": "Docker Hub",
+          "icon": "docker",
+          "description": "Registre d'images pour publier et distribuer les conteneurs.",
+          "evidence": "declared"
+        }
+      ]
+    },
+    {
+      "category": "Cloud",
+      "items": [
+        {
+          "name": "AWS",
+          "icon": "aws",
+          "description": "Services cloud Amazon. Cours KodeKloud « Amazon Elastic Container Service (AWS ECS) » suivi.",
+          "evidence": "training"
+        },
+        {
+          "name": "Google Cloud Platform",
+          "icon": "googlecloud",
+          "description": "Plateforme cloud de Google.",
+          "evidence": "declared"
+        },
+        {
+          "name": "Microsoft Azure",
+          "icon": "azure",
+          "description": "Plateforme cloud de Microsoft.",
+          "evidence": "declared"
+        }
+      ]
+    },
+    {
+      "category": "Infrastructure as Code",
+      "items": [
+        {
+          "name": "Terraform",
+          "icon": "terraform",
+          "description": "Description et provisionnement d'infrastructure sous forme de code.",
+          "evidence": "declared"
+        },
+        {
+          "name": "HCP Terraform",
+          "icon": "hashicorp",
+          "description": "Exécution distante et gestion d'état Terraform hébergées par HashiCorp.",
+          "evidence": "declared"
+        }
+      ]
+    },
+    {
+      "category": "Configuration Management",
+      "items": [
+        {
+          "name": "Ansible",
+          "icon": "ansible",
+          "description": "Automatisation de la configuration et des tâches planifiées (avec Crontab).",
+          "evidence": "practiced"
+        }
+      ]
+    },
+    {
+      "category": "Security",
+      "items": [
+        {
+          "name": "Trivy",
+          "icon": "trivy",
+          "description": "Analyse de vulnérabilités des images de conteneurs et des dépendances.",
+          "evidence": "declared"
+        },
+        {
+          "name": "Traefik & SSL/TLS",
+          "icon": "traefikproxy",
+          "description": "Reverse proxy, certificats TLS, sécurisation des ports et des instances.",
+          "evidence": "practiced"
+        }
+      ]
+    },
+    {
+      "category": "Monitoring",
+      "items": [
+        {
+          "name": "Prometheus",
+          "icon": "prometheus",
+          "description": "Collecte de métriques des services et de l'infrastructure.",
+          "evidence": "practiced"
+        },
+        {
+          "name": "Grafana",
+          "icon": "grafana",
+          "description": "Dashboards de supervision en temps réel.",
+          "evidence": "practiced"
+        },
+        {
+          "name": "Alertmanager",
+          "icon": "prometheus",
+          "description": "Routage des alertes et notifications de monitoring.",
+          "evidence": "practiced"
+        },
+        {
+          "name": "Loki",
+          "icon": "grafana",
+          "description": "Agrégation et consultation des logs.",
+          "evidence": "declared"
+        },
+        {
+          "name": "Promtail",
+          "icon": "grafana",
+          "description": "Agent de collecte des logs à destination de Loki.",
+          "evidence": "declared"
+        }
+      ]
+    },
+    {
+      "category": "Systems",
+      "items": [
+        {
+          "name": "Linux",
+          "icon": "linux",
+          "description": "Administration système, ligne de commande, Crontab.",
+          "evidence": "practiced"
+        },
+        {
+          "name": "Windows Server",
+          "icon": "windows",
+          "description": "Active Directory, contrôleur de domaine et stratégies de groupe (GPO) — projet académique.",
+          "evidence": "academic"
+        },
+        {
+          "name": "Networking",
+          "icon": "cisco",
+          "description": "Fondamentaux réseau : Ethernet, IPv4/IPv6, routage. Cours Cisco « Networking Basics » suivi.",
+          "evidence": "training"
+        }
+      ]
+    }
+  ],
+  "otherSkills": [
+    "Help Desk et maintenance informatique",
+    "Google Apps Script",
+    "Google Looker Studio",
+    "HTML5, CSS3, JavaScript, PHP, MySQL",
+    "Trello, Canva"
+  ],
+  "projects": [
+    {
+      "id": "infra-deploiement",
+      "name": "Infrastructure de déploiement automatisé et sécurisé",
+      "category": "Projet de stage — HaiRun Technology",
+      "period": "Juin – Septembre 2025",
+      "description": "Mise en place, pendant mon stage DevOps, d'une chaîne complète allant du dépôt de code jusqu'à la supervision : pipelines GitLab CI, conteneurs Docker en production, exposition sécurisée derrière Traefik et monitoring temps réel.",
+      "stack": ["GitLab CI", "Docker", "Docker Compose", "Ansible", "Crontab", "Traefik", "SSL/TLS", "Prometheus", "Grafana", "Alertmanager"],
+      "architecture": ["Push Git", "GitLab CI (Parent/Child)", "Images Docker", "Docker Compose (production)", "Traefik + SSL/TLS", "Prometheus · Grafana · Alertmanager"],
+      "features": [
+        "Pipelines CI/CD GitLab avec pipelines Parent/Child dynamiques",
+        "Tâches planifiées avec Ansible et Crontab pour des déploiements fiables et rapides",
+        "Conteneurs Docker et Docker Compose pour les environnements de production",
+        "Traefik, SSL/TLS, sécurisation des ports et des instances",
+        "Dashboards temps réel et notifications avec Prometheus, Grafana et Alertmanager"
+      ],
+      "screenshots": [],
+      "github": "",
+      "featured": true,
+      "missing": ["Captures d'écran", "Lien GitHub"]
+    },
+    {
+      "id": "pipeline-gitlab",
+      "name": "Pipeline CI/CD avec GitLab",
+      "category": "Volet du projet de stage",
+      "period": "2025",
+      "description": "Conception de pipelines GitLab CI pour automatiser le déploiement, en s'appuyant sur des pipelines Parent/Child dynamiques.",
+      "stack": ["GitLab CI"],
+      "architecture": ["Pipeline parent", "Génération dynamique", "Pipelines enfants", "Déploiement"],
+      "features": ["Pipelines Parent/Child dynamiques", "Déploiements fiables et rapides"],
+      "screenshots": [],
+      "github": "",
+      "featured": false,
+      "missing": ["Détail des étapes du pipeline", "Captures d'écran", "Lien GitHub"]
+    },
+    {
+      "id": "deploiement-docker",
+      "name": "Déploiement d'applications avec Docker",
+      "category": "Volet du projet de stage",
+      "period": "2025",
+      "description": "Création et gestion des conteneurs Docker et Docker Compose pour les environnements de production, exposés derrière Traefik avec SSL/TLS.",
+      "stack": ["Docker", "Docker Compose", "Traefik", "SSL/TLS"],
+      "architecture": ["Images Docker", "Docker Compose", "Traefik", "HTTPS"],
+      "features": ["Environnements de production conteneurisés", "Sécurisation des ports et des instances"],
+      "screenshots": [],
+      "github": "",
+      "featured": false,
+      "missing": ["Applications déployées", "Captures d'écran", "Lien GitHub"]
+    },
+    {
+      "id": "monitoring",
+      "name": "Monitoring avec Prometheus et Grafana",
+      "category": "Volet du projet de stage",
+      "period": "2025",
+      "description": "Déploiement d'une pile de supervision et d'observabilité : métriques, dashboards en temps réel et notifications d'alerte.",
+      "stack": ["Prometheus", "Grafana", "Alertmanager"],
+      "architecture": ["Services", "Prometheus", "Alertmanager", "Grafana"],
+      "features": ["Dashboards en temps réel", "Notifications de monitoring"],
+      "screenshots": [],
+      "github": "",
+      "featured": false,
+      "missing": ["Métriques et alertes suivies", "Captures des dashboards", "Lien GitHub"]
+    },
+    {
+      "id": "sauvegardes-ansible",
+      "name": "Automatisation de sauvegardes avec Ansible",
+      "category": "Automatisation",
+      "period": "",
+      "description": "",
+      "stack": ["Ansible", "Crontab"],
+      "architecture": [],
+      "features": [],
+      "screenshots": [],
+      "github": "",
+      "featured": false,
+      "missing": ["Description du projet", "Architecture", "Fonctionnalités", "Captures d'écran", "Lien GitHub"]
+    },
+    {
+      "id": "terraform-cloud",
+      "name": "Infrastructure Cloud avec Terraform",
+      "category": "Infrastructure as Code",
+      "period": "",
+      "description": "",
+      "stack": ["Terraform", "HCP Terraform"],
+      "architecture": [],
+      "features": [],
+      "screenshots": [],
+      "github": "",
+      "featured": false,
+      "missing": ["Description du projet", "Fournisseur cloud utilisé", "Architecture", "Captures d'écran", "Lien GitHub"]
+    },
+    {
+      "id": "active-directory",
+      "name": "Configuration d'un serveur Active Directory",
+      "category": "Projet académique",
+      "period": "",
+      "description": "Mise en place d'un contrôleur de domaine sous Windows Server et gestion de l'application des stratégies de groupe (GPO).",
+      "stack": ["Windows Server", "Active Directory", "GPO"],
+      "architecture": ["Windows Server", "Contrôleur de domaine", "Stratégies de groupe"],
+      "features": ["Contrôleur de domaine", "Application de stratégies de groupe (GPO)"],
+      "screenshots": [],
+      "github": "",
+      "featured": false,
+      "missing": ["Captures d'écran"]
+    },
+    {
+      "id": "site-ecommerce",
+      "name": "Développement d'un site e-commerce",
+      "category": "Projet académique",
+      "period": "",
+      "description": "Création d'un site web e-commerce avec HTML5, CSS3, JavaScript et PHP, et gestion de la base de données avec MySQL sur un serveur local XAMPP.",
+      "stack": ["HTML5", "CSS3", "JavaScript", "PHP", "MySQL", "XAMPP"],
+      "architecture": ["Front HTML/CSS/JS", "PHP", "MySQL (XAMPP)"],
+      "features": ["Site e-commerce", "Base de données MySQL"],
+      "screenshots": [],
+      "github": "",
+      "featured": false,
+      "missing": ["Captures d'écran", "Lien GitHub"]
+    }
+  ],
+  "certifications": [
+    {
+      "id": "itcilo-buildproc",
+      "title": "BUILDPROC MOOC — Cours en ligne ouvert et massif sur la passation de marchés pour le développement agricole et rural",
+      "issuer": "CIF-OIT (ITCILO) · FIDA",
+      "icon": "itcilo",
+      "date": "27 octobre 2026",
+      "kind": "Attestation de MOOC",
+      "credentialId": "198402218",
+      "skills": ["Passation de marchés", "Développement agricole et rural"],
+      "file": "itcilo-buildproc-mooc.pdf"
+    },
+    {
+      "id": "kodekloud-k8s",
+      "title": "Kubernetes Challenges",
+      "issuer": "KodeKloud",
+      "icon": "kodekloud",
+      "date": "9 juin 2025",
+      "kind": "Course Completion Certificate",
+      "credentialId": "570bd780-ceb3-4d28-8ab8-c976d13f1fe4",
+      "skills": ["Kubernetes"],
+      "file": "kodekloud-kubernetes-challenges.jpg"
+    },
+    {
+      "id": "kodekloud-ecs",
+      "title": "Amazon Elastic Container Service (AWS ECS)",
+      "issuer": "KodeKloud",
+      "icon": "kodekloud",
+      "date": "7 juin 2025",
+      "kind": "Course Completion Certificate",
+      "credentialId": "6588f0ef-fefb-4e1c-a6a2-579cd70d08b6",
+      "skills": ["AWS ECS", "Conteneurs sur AWS"],
+      "file": "kodekloud-aws-ecs.jpg"
+    },
+    {
+      "id": "fortinet-fcf",
+      "title": "FCF - Introduction to the Threat Landscape 2.0 Self-Paced",
+      "issuer": "Fortinet Training Institute",
+      "icon": "fortinet",
+      "date": "10 mars 2025",
+      "kind": "Course completion",
+      "credentialId": "",
+      "skills": ["Paysage des menaces", "Cybersécurité"],
+      "file": "fortinet-fcf-threat-landscape.jpg"
+    },
+    {
+      "id": "cisco-cybersecurity",
+      "title": "Introduction to Cybersecurity",
+      "issuer": "Cisco Networking Academy",
+      "icon": "cisco",
+      "date": "16 janvier 2025",
+      "kind": "Certificate of Course Completion",
+      "credentialId": "",
+      "skills": ["Sécurité en ligne", "Menaces, attaques et vulnérabilités", "Protection des organisations"],
+      "file": "cisco-introduction-to-cybersecurity.jpg"
+    },
+    {
+      "id": "cisco-networking",
+      "title": "Networking Basics",
+      "issuer": "Cisco Networking Academy",
+      "icon": "cisco",
+      "date": "3 août 2024",
+      "kind": "Certificate of Course Completion",
+      "credentialId": "",
+      "skills": ["Communication réseau", "Ethernet", "IPv4 / IPv6", "Routage", "Dépannage de connectivité", "Routeur sans fil"],
+      "file": "cisco-networking-basics.jpg"
+    }
+  ],
+  "documents": [
+    {
+      "id": "doc-cv",
+      "title": "CV — RAHAINGONANTENAINA Tafitasoa Riana Nandrianina (Rynah Tadashi)",
+      "file": "cv-rynah-tadashi.pdf",
+      "text": "CV. Poste : DevOps.\nPROFIL : Titulaire d'une Licence en DevOps & Infrastructure Cloud, passionné d'automatisation, de numérisation et de cybersécurité. Curieux et motivé, je souhaite mettre mes compétences techniques au service de la transformation digitale des institutions, en contribuant à des projets structurants à fort impact national.\n\nEXPÉRIENCE PROFESSIONNELLE : Stagiaire en DevOps, Hairun Technology, juin - septembre 2025.\n1. Automatisation et Déploiement : mise en place de pipelines CI/CD (GitLab CI, Pipelines Parent/Child dynamiques), gestion des tâches planifiées avec Ansible et Crontab pour des déploiements fiables et rapides.\n2. Containerisation et Production : création et gestion des conteneurs Docker et Docker Compose pour les environnements de production.\n3. Réseau et Sécurité : Traefik, SSL/TLS, sécurisation des ports et instances pour optimiser le trafic et protéger les services.\n4. Supervision et Observabilité : déploiement de Prometheus, Grafana, Alertmanager pour dashboards en temps réel et notifications de monitoring.\n\nPROJETS ACADÉMIQUES : Configuration d'un serveur Active Directory (mise en place de contrôleur de domaine sous Windows Server, gestion d'application de stratégies de groupe GPO). Développement d'un site e-commerce (création web avec HTML5, CSS3, JavaScript, PHP ; gestion de base de données avec MySQL et serveur local via XAMPP).\n\nCOMPÉTENCES TECHNIQUES listées dans le CV :\nSystèmes et Support : Windows, Linux, Help Desk, maintenance informatique, Windows Server.\nContainerisation : Docker, Docker Compose.\nCI/CD et Automatisation : GitLab CI, GitHub Actions, Ansible, Google Apps Script.\nSécurité : analyse de vulnérabilités, sécurisation des systèmes.\nCloud : AWS, GCP, Azure.\nWeb et base de données : HTML5, CSS3, JavaScript, PHP, MySQL.\nGestion de projets et design : Trello, Canva.\nMonitoring : Prometheus, Grafana, Google Looker Studio.\n\nÉDUCATION : Licence, GE-IT Université, 2025, DevOps et infrastructure cloud. Baccalauréat technique, LTP Alarobia, 2019, Électronique (mention AB). Brevet d'études professionnel, LTP Alarobia, 2018, Télécommunication.\n\nCOMPÉTENCES PERSONNELLES : rigueur et organisation, polyvalence, dynamisme, esprit d'équipe.\nLANGUES : Malagasy (maternelle), Français (B2), Anglais (A2).\nVIE ASSOCIATIVE : MAFAMI Antsiranana."
+    },
+    {
+      "id": "doc-cisco-cyber",
+      "title": "Certificat Cisco Networking Academy — Introduction to Cybersecurity",
+      "file": "cisco-introduction-to-cybersecurity.jpg",
+      "text": "Cisco Networking Academy. Certificate of Course Completion. Tafitasoa Riana Nandrianina RAHAINGONANTENAINA has successfully achieved student level credential for completing the Introduction to Cybersecurity course. Date: January 16, 2025.\nThe student was able to proficiently: explain the basics of being safe online, including what cybersecurity is and its potential impact; explain the most common cyber threats, attacks, and vulnerabilities; explain how to protect oneself while online; explain how organizations can protect their operations against these attacks; access a variety of information and resources to explore the different career options in cybersecurity.\nSigned: Laura Quintana, Vice President and General Manager, Cisco Networking Academy."
+    },
+    {
+      "id": "doc-cisco-net",
+      "title": "Certificat Cisco Networking Academy — Networking Basics",
+      "file": "cisco-networking-basics.jpg",
+      "text": "Cisco Networking Academy. Certificate of Course Completion. Tafitasoa Riana Nandrianina RAHAINGONANTENAINA has successfully achieved student level credential for completing the Networking Basics course. Date: August 03, 2024.\nThe student was able to proficiently: explain important concepts in network communication, network types, components, and connections; explain the importance of standards and protocols in network communications; explain how communication occurs on Ethernet networks; explain the features of an IP address and how IPv4 addresses are used in network communication; explain features of IPv6 addressing; explain how routers connect networks together; use various tools to test and troubleshoot network connectivity; configure an integrated wireless router and wireless client to connect securely to the internet.\nSigned: Laura Quintana, Vice President and General Manager, Cisco Networking Academy."
+    },
+    {
+      "id": "doc-fortinet",
+      "title": "Attestation Fortinet Training Institute — FCF Introduction to the Threat Landscape 2.0",
+      "file": "fortinet-fcf-threat-landscape.jpg",
+      "text": "Fortinet Training Institute. This acknowledges that Tafitasoa Riana Nandrianina RAHAINGONANTENAINA successfully completed the course FCF - Introduction to the Threat Landscape 2.0 Self-Paced. Date: March 10, 2025. Signed: Rob Rashotte, Vice President, Fortinet Training Institute.\nNote : il s'agit d'une attestation de réussite d'un cours, pas de la certification Fortinet Certified Fundamentals complète."
+    },
+    {
+      "id": "doc-kk-ecs",
+      "title": "Certificat KodeKloud — Amazon Elastic Container Service (AWS ECS)",
+      "file": "kodekloud-aws-ecs.jpg",
+      "text": "KodeKloud Course Completion Certificate. This certificate is proudly presented to RAHAINGONANTENAINA Tafitasoa Riana Nandrianina for successfully completing our Amazon Elastic Container Service (AWS ECS). Date: June 07, 2025. ID: 6588f0ef-fefb-4e1c-a6a2-579cd70d08b6. Signed: Mumshad Mannambeth, Founder & Trainer, KodeKloud."
+    },
+    {
+      "id": "doc-kk-k8s",
+      "title": "Certificat KodeKloud — Kubernetes Challenges",
+      "file": "kodekloud-kubernetes-challenges.jpg",
+      "text": "KodeKloud Course Completion Certificate. This certificate is proudly presented to RAHAINGONANTENAINA Tafitasoa Riana Nandrianina for successfully completing our Kubernetes Challenges. Date: June 09, 2025. ID: 570bd780-ceb3-4d28-8ab8-c976d13f1fe4. Signed: Mumshad Mannambeth, Founder & Trainer, KodeKloud.\nNote : Kubernetes apparaît uniquement dans cette formation ; aucune utilisation en projet ou en entreprise n'est documentée."
+    },
+    {
+      "id": "doc-buildproc",
+      "title": "Attestation CIF-OIT (ITCILO) / FIDA — BUILDPROC MOOC",
+      "file": "itcilo-buildproc-mooc.pdf",
+      "text": "Attestation délivrée à Tafitasoa Riana Nandrianina RAHAINGONANTENAINA. BUILDPROC MOOC : cours en ligne ouvert et massif (MOOC) sur la passation de marchés pour le développement agricole et rural. Organisé en coopération avec et financé par le Fonds international de développement agricole (FIDA). Signataires : Valentina Maksiutenko, responsable de projet BUILDPROC, DEVINVEST, CIF-OIT ; Enzo de Laurentiis, chef de la passation des marchés et de la gestion financière, FIDA. Numéro : 198402218. Date : 27 octobre 2026.\nNote : cette formation porte sur la passation de marchés, pas sur un sujet technique DevOps."
+    }
+  ],
+  "notes": [
+    {
+      "id": "note-identite",
+      "title": "Identité et nom d'usage",
+      "text": "Rynah Tadashi est le nom d'usage professionnel de RAHAINGONANTENAINA Tafitasoa Riana Nandrianina. Les certificats et le CV sont établis à son nom complet."
+    },
+    {
+      "id": "note-niveaux",
+      "title": "Comment lire les compétences",
+      "text": "Compétences pratiquées en entreprise (stage HaiRun Technology, juin-septembre 2025) : GitLab CI avec pipelines Parent/Child dynamiques, Ansible et Crontab, Docker et Docker Compose, Traefik et SSL/TLS, Prometheus, Grafana, Alertmanager, Linux.\nCompétences pratiquées en projet académique : Windows Server, Active Directory, GPO ; HTML5, CSS3, JavaScript, PHP, MySQL.\nCompétences déclarées par Rynah sans projet documenté à ce jour : Terraform, HCP Terraform, Trivy, Docker Hub, Loki, Promtail, GitHub Actions, GCP, Azure.\nConnaissances issues de formations uniquement : AWS ECS (KodeKloud), Kubernetes (KodeKloud), fondamentaux réseau et cybersécurité (Cisco Networking Academy), paysage des menaces (Fortinet)."
+    }
+  ]
+}
