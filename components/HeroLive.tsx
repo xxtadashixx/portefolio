@@ -13,7 +13,7 @@ type Step = { kind: "cmd" | "out"; text: string; stage: number; cls?: string };
 const SCRIPT: Step[] = [
   { kind: "cmd", text: "git push origin main", stage: 1 },
   { kind: "out", text: "→ pipeline déclenché · parent/child", stage: 2, cls: "c-m" },
-  { kind: "out", text: "  ✓ build   ✓ test   ✓ deploy", stage: 2, cls: "c-ok" },
+  { kind: "out", text: "  ✓ provision  ✓ build  ✓ scan  ✓ deploy", stage: 2, cls: "c-ok" },
   { kind: "cmd", text: "docker compose up -d", stage: 3 },
   { kind: "out", text: "  ✓ traefik  ✓ app  ✓ prometheus  ✓ grafana", stage: 4, cls: "c-ok" },
   { kind: "cmd", text: "curl -sI https://app | head -1", stage: 4 },

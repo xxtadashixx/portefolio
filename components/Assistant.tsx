@@ -70,7 +70,7 @@ function Rich({ text }: { text: string }) {
   return <>{blocks}</>;
 }
 
-export function Assistant({ enabled }: { enabled: boolean }) {
+export function Assistant({ enabled, avatarSrc }: { enabled: boolean; avatarSrc: string | null }) {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([]);
   const [value, setValue] = useState("");
@@ -155,7 +155,12 @@ export function Assistant({ enabled }: { enabled: boolean }) {
   if (!open) {
     return (
       <button ref={fab} className="ai-fab" onClick={() => setOpen(true)} aria-label="Ouvrir l'assistant TADASHI AI">
-        <span className="orb" />
+        {avatarSrc ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img className="fab-face" src={avatarSrc} alt="" width={30} height={30} />
+        ) : (
+          <span className="orb" />
+        )}
         <span className="lbl">TADASHI AI</span>
       </button>
     );
@@ -164,7 +169,14 @@ export function Assistant({ enabled }: { enabled: boolean }) {
   return (
     <aside className="ai-panel" role="dialog" aria-label="Assistant TADASHI AI">
       <div className="ai-head">
-        <span className="orb">AI</span>
+        {avatarSrc ? (
+          <span className="avatar">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={avatarSrc} alt="" width={36} height={36} />
+          </span>
+        ) : (
+          <span className="orb">AI</span>
+        )}
         <div>
           <strong>TADASHI AI</strong>
           <small>{enabled ? "Répond à partir du CV et des certificats" : "Hors ligne"}</small>

@@ -22,6 +22,7 @@ const LABELS: Record<string, string> = {
   linkedin: "LinkedIn (URL)",
   github: "GitHub (URL)",
   cvFile: "Fichier du CV",
+  avatarFile: "Avatar pixel art (image carrée, PNG)",
   domains: "Domaines",
   softSkills: "Compétences personnelles",
   languages: "Langues",
@@ -40,7 +41,9 @@ const LABELS: Record<string, string> = {
   evidence: "Origine de la compétence",
   stack: "Technologies",
   architecture: "Architecture (étapes dans l'ordre)",
-  features: "Fonctionnalités",
+  application: "Application / solution (ce qui est déployé, et par qui c'est développé)",
+  contribution: "Ma contribution DevOps",
+  pipeline: "Pipeline (une étape par ligne : étape | job, job)",
   screenshots: "Captures d'écran (fichiers)",
   featured: "Projet mis en avant",
   missing: "Informations encore manquantes (affichées « à compléter »)",
@@ -53,15 +56,15 @@ const LABELS: Record<string, string> = {
   text: "Texte utilisé par l'assistant",
   id: "Identifiant technique",
 };
-const LONG = new Set(["summary", "description", "text", "intro", "detail"]);
-const FILE_KEYS = new Set(["file", "cvFile"]);
+const LONG = new Set(["summary", "description", "application", "text", "intro", "detail"]);
+const FILE_KEYS = new Set(["file", "cvFile", "avatarFile"]);
 
 const TEMPLATES: Record<string, object> = {
   education: { title: "", school: "", year: "", detail: "" },
   experience: { role: "", company: "", period: "", summary: "", bullets: [] },
   skills: { category: "", items: [] },
   items: { name: "", icon: "", description: "", evidence: "declared" },
-  projects: { id: "", name: "", category: "", period: "", description: "", stack: [], architecture: [], features: [], screenshots: [], github: "", featured: false, missing: [] },
+  projects: { id: "", name: "", category: "", period: "", description: "", application: "", contribution: [], stack: [], pipeline: [], architecture: [], screenshots: [], github: "", featured: false, missing: [] },
   certifications: { id: "", title: "", issuer: "", icon: "", date: "", kind: "", credentialId: "", skills: [], file: "" },
   documents: { id: "", title: "", file: "", text: "" },
   notes: { id: "", title: "", text: "" },
@@ -290,7 +293,7 @@ const TABS: { id: string; label: string; keys: (keyof Content)[]; help: string }
   { id: "profil", label: "Profil", keys: ["profile"], help: "Identité, accroche, coordonnées et CV affichés sur le site." },
   { id: "parcours", label: "Parcours", keys: ["experience", "education"], help: "Expériences professionnelles et formation." },
   { id: "stack", label: "Compétences", keys: ["skills", "otherSkills"], help: "Technologies par catégorie. « Origine » précise d'où vient la compétence ; aucun niveau n'est affiché." },
-  { id: "projets", label: "Projets", keys: ["projects"], help: "Fiches projets. Videz « informations manquantes » quand une fiche est complète." },
+  { id: "projets", label: "Projets", keys: ["projects"], help: "Fiches projets en deux parties : l'application concernée, puis votre contribution DevOps. Videz « informations manquantes » quand une fiche est complète." },
   { id: "certifs", label: "Certificats", keys: ["certifications"], help: "N'ajoutez un certificat que si vous disposez du document qui le confirme." },
   { id: "ia", label: "Base de l'assistant", keys: ["documents", "notes"], help: "Documents et notes lus par TADASHI AI, en plus du contenu du site. Importez un PDF ou une image, extrayez son texte, relisez, enregistrez." },
 ];

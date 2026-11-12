@@ -21,9 +21,21 @@
       "IT Security",
       "Monitoring"
     ],
-    "softSkills": ["Rigueur & organisation", "Polyvalence", "Dynamisme", "Esprit d'équipe"],
-    "languages": ["Malagasy — langue maternelle", "Français — B2", "Anglais — A2"],
-    "associations": ["MAFAMI Antsiranana"]
+    "softSkills": [
+      "Rigueur & organisation",
+      "Polyvalence",
+      "Dynamisme",
+      "Esprit d'équipe"
+    ],
+    "languages": [
+      "Malagasy — langue maternelle",
+      "Français — B2",
+      "Anglais — A2"
+    ],
+    "associations": [
+      "MAFAMI Antsiranana"
+    ],
+    "avatarFile": "avatar-pixel.png"
   },
   "education": [
     {
@@ -66,7 +78,7 @@
         {
           "name": "GitLab CI/CD",
           "icon": "gitlab",
-          "description": "Pipelines d'intégration et de déploiement continus, dont des pipelines Parent/Child dynamiques.",
+          "description": "Pipeline parent/child en quatre étapes : provision, build, scan, deploy.",
           "evidence": "practiced"
         },
         {
@@ -83,7 +95,7 @@
         {
           "name": "Docker",
           "icon": "docker",
-          "description": "Création et gestion de conteneurs pour les environnements de production.",
+          "description": "Dockerfiles, images et conteneurs des applications en production.",
           "evidence": "practiced"
         },
         {
@@ -95,8 +107,8 @@
         {
           "name": "Docker Hub",
           "icon": "docker",
-          "description": "Registre d'images pour publier et distribuer les conteneurs.",
-          "evidence": "declared"
+          "description": "Publication et gestion des images versionnées des applications.",
+          "evidence": "practiced"
         }
       ]
     },
@@ -106,14 +118,14 @@
         {
           "name": "AWS",
           "icon": "aws",
-          "description": "Services cloud Amazon. Cours KodeKloud « Amazon Elastic Container Service (AWS ECS) » suivi.",
-          "evidence": "training"
+          "description": "VPC, groupe de sécurité et instance EC2 provisionnés avec Terraform. Cours KodeKloud « AWS ECS » suivi.",
+          "evidence": "practiced"
         },
         {
           "name": "Google Cloud Platform",
           "icon": "googlecloud",
-          "description": "Plateforme cloud de Google.",
-          "evidence": "declared"
+          "description": "Réseau VPC, pare-feu et instance Compute Engine décrits avec Terraform.",
+          "evidence": "practiced"
         },
         {
           "name": "Microsoft Azure",
@@ -129,14 +141,14 @@
         {
           "name": "Terraform",
           "icon": "terraform",
-          "description": "Description et provisionnement d'infrastructure sous forme de code.",
-          "evidence": "declared"
+          "description": "Réseau et serveur décrits en code, sur AWS et Google Cloud, appliqués depuis le pipeline.",
+          "evidence": "practiced"
         },
         {
           "name": "HCP Terraform",
           "icon": "hashicorp",
-          "description": "Exécution distante et gestion d'état Terraform hébergées par HashiCorp.",
-          "evidence": "declared"
+          "description": "État et exécution Terraform distants, utilisés depuis GitLab CI.",
+          "evidence": "practiced"
         }
       ]
     },
@@ -146,7 +158,7 @@
         {
           "name": "Ansible",
           "icon": "ansible",
-          "description": "Automatisation de la configuration et des tâches planifiées (avec Crontab).",
+          "description": "Rôle de sauvegarde par rsync et tâches planifiées avec Crontab.",
           "evidence": "practiced"
         }
       ]
@@ -157,13 +169,13 @@
         {
           "name": "Trivy",
           "icon": "trivy",
-          "description": "Analyse de vulnérabilités des images de conteneurs et des dépendances.",
-          "evidence": "declared"
+          "description": "Analyse des vulnérabilités HIGH et CRITICAL des images dans le pipeline.",
+          "evidence": "practiced"
         },
         {
           "name": "Traefik & SSL/TLS",
           "icon": "traefikproxy",
-          "description": "Reverse proxy, certificats TLS, sécurisation des ports et des instances.",
+          "description": "Reverse proxy, redirection HTTPS et certificats Let's Encrypt.",
           "evidence": "practiced"
         }
       ]
@@ -174,7 +186,7 @@
         {
           "name": "Prometheus",
           "icon": "prometheus",
-          "description": "Collecte de métriques des services et de l'infrastructure.",
+          "description": "Collecte de métriques, règles d'alerte système, conteneurs et applications.",
           "evidence": "practiced"
         },
         {
@@ -186,7 +198,7 @@
         {
           "name": "Alertmanager",
           "icon": "prometheus",
-          "description": "Routage des alertes et notifications de monitoring.",
+          "description": "Alertes par email, routage par sévérité et règles d'inhibition.",
           "evidence": "practiced"
         },
         {
@@ -228,6 +240,8 @@
     }
   ],
   "otherSkills": [
+    "Podman",
+    "Node Exporter, cAdvisor, Blackbox Exporter",
     "Help Desk et maintenance informatique",
     "Google Apps Script",
     "Google Looker Studio",
@@ -240,118 +254,277 @@
       "name": "Infrastructure de déploiement automatisé et sécurisé",
       "category": "Projet de stage — HaiRun Technology",
       "period": "Juin – Septembre 2025",
-      "description": "Mise en place, pendant mon stage DevOps, d'une chaîne complète allant du dépôt de code jusqu'à la supervision : pipelines GitLab CI, conteneurs Docker en production, exposition sécurisée derrière Traefik et monitoring temps réel.",
-      "stack": ["GitLab CI", "Docker", "Docker Compose", "Ansible", "Crontab", "Traefik", "SSL/TLS", "Prometheus", "Grafana", "Alertmanager"],
-      "architecture": ["Push Git", "GitLab CI (Parent/Child)", "Images Docker", "Docker Compose (production)", "Traefik + SSL/TLS", "Prometheus · Grafana · Alertmanager"],
-      "features": [
-        "Pipelines CI/CD GitLab avec pipelines Parent/Child dynamiques",
-        "Tâches planifiées avec Ansible et Crontab pour des déploiements fiables et rapides",
-        "Conteneurs Docker et Docker Compose pour les environnements de production",
-        "Traefik, SSL/TLS, sécurisation des ports et des instances",
-        "Dashboards temps réel et notifications avec Prometheus, Grafana et Alertmanager"
+      "featured": true,
+      "description": "Un seul push sur la branche principale provisionne le serveur cloud, construit et publie les images, les analyse, puis déploie toutes les applications en HTTPS.",
+      "application": "Trois applications web conteneurisées servent de charge à déployer : une boutique e-commerce MERN (React/Vite, Node.js, MongoDB, Redis), une API de billetterie et une application de transport en bus. Elles ont été développées par d'autres ; je n'en ai pas écrit le code.",
+      "contribution": [
+        "Provisionnement de l'infrastructure AWS avec Terraform (VPC, sous-réseau public, passerelle Internet, groupe de sécurité, instance EC2), état géré dans HCP Terraform",
+        "Pipeline GitLab CI parent/child : l'adresse IP du serveur créé par Terraform est transmise automatiquement aux pipelines enfants",
+        "Construction des images frontend et backend puis publication sur Docker Hub",
+        "Analyse de sécurité des images avec Trivy (vulnérabilités HIGH et CRITICAL)",
+        "Installation de Docker sur le serveur par script, puis déploiement par SSH et Docker Compose",
+        "Reverse proxy Traefik : routage par labels Docker, redirection HTTP vers HTTPS, certificats Let's Encrypt",
+        "Supervision avec Prometheus, Grafana et Alertmanager, alertes par email",
+        "Sauvegarde des données du serveur avec un rôle Ansible"
+      ],
+      "stack": [
+        "GitLab CI",
+        "Terraform",
+        "HCP Terraform",
+        "AWS EC2",
+        "Docker",
+        "Docker Compose",
+        "Docker Hub",
+        "Podman",
+        "Trivy",
+        "Traefik",
+        "Let's Encrypt",
+        "Prometheus",
+        "Grafana",
+        "Alertmanager",
+        "Ansible"
+      ],
+      "pipeline": [
+        "provision | terraform apply",
+        "build | build images, push Docker Hub",
+        "scan | trivy scan",
+        "deploy | traefik, bus_transport, ticket_api, ecommerce"
+      ],
+      "architecture": [
+        "GitLab CI",
+        "Terraform → AWS EC2",
+        "Docker Hub",
+        "Traefik · HTTPS",
+        "Applications conteneurisées",
+        "Prometheus · Grafana"
       ],
       "screenshots": [],
       "github": "",
-      "featured": true,
-      "missing": ["Captures d'écran", "Lien GitHub"]
+      "missing": [
+        "Captures d'écran",
+        "Lien vers le dépôt"
+      ]
     },
     {
       "id": "pipeline-gitlab",
-      "name": "Pipeline CI/CD avec GitLab",
-      "category": "Volet du projet de stage",
+      "name": "Pipeline CI/CD parent/child avec GitLab",
+      "category": "CI/CD",
       "period": "2025",
-      "description": "Conception de pipelines GitLab CI pour automatiser le déploiement, en s'appuyant sur des pipelines Parent/Child dynamiques.",
-      "stack": ["GitLab CI"],
-      "architecture": ["Pipeline parent", "Génération dynamique", "Pipelines enfants", "Déploiement"],
-      "features": ["Pipelines Parent/Child dynamiques", "Déploiements fiables et rapides"],
-      "screenshots": [],
-      "github": "",
       "featured": false,
-      "missing": ["Détail des étapes du pipeline", "Captures d'écran", "Lien GitHub"]
-    },
-    {
-      "id": "deploiement-docker",
-      "name": "Déploiement d'applications avec Docker",
-      "category": "Volet du projet de stage",
-      "period": "2025",
-      "description": "Création et gestion des conteneurs Docker et Docker Compose pour les environnements de production, exposés derrière Traefik avec SSL/TLS.",
-      "stack": ["Docker", "Docker Compose", "Traefik", "SSL/TLS"],
-      "architecture": ["Images Docker", "Docker Compose", "Traefik", "HTTPS"],
-      "features": ["Environnements de production conteneurisés", "Sécurisation des ports et des instances"],
-      "screenshots": [],
-      "github": "",
-      "featured": false,
-      "missing": ["Applications déployées", "Captures d'écran", "Lien GitHub"]
-    },
-    {
-      "id": "monitoring",
-      "name": "Monitoring avec Prometheus et Grafana",
-      "category": "Volet du projet de stage",
-      "period": "2025",
-      "description": "Déploiement d'une pile de supervision et d'observabilité : métriques, dashboards en temps réel et notifications d'alerte.",
-      "stack": ["Prometheus", "Grafana", "Alertmanager"],
-      "architecture": ["Services", "Prometheus", "Alertmanager", "Grafana"],
-      "features": ["Dashboards en temps réel", "Notifications de monitoring"],
-      "screenshots": [],
-      "github": "",
-      "featured": false,
-      "missing": ["Métriques et alertes suivies", "Captures des dashboards", "Lien GitHub"]
-    },
-    {
-      "id": "sauvegardes-ansible",
-      "name": "Automatisation de sauvegardes avec Ansible",
-      "category": "Automatisation",
-      "period": "",
-      "description": "",
-      "stack": ["Ansible", "Crontab"],
+      "description": "Un pipeline parent orchestre quatre étapes et délègue chaque application à son propre pipeline enfant.",
+      "application": "Le pipeline livre les trois applications du projet de déploiement (e-commerce MERN, API de billetterie, application de transport). Application fournie : je n'en ai pas écrit le code. Mon travail porte sur tout ce qui l'entoure.",
+      "contribution": [
+        "Pipeline parent en quatre étapes : provision, build, scan, deploy",
+        "Un pipeline enfant par application, déclenché avec « trigger » et « strategy: depend »",
+        "Transmission de l'IP du serveur entre les jobs par artefact dotenv",
+        "Ordonnancement avec « needs » : Traefik est déployé avant les applications",
+        "Identifiants (clé SSH, Docker Hub, jeton Terraform) fournis par les variables CI/CD",
+        "Exécution limitée à la branche principale"
+      ],
+      "stack": [
+        "GitLab CI",
+        "Pipelines parent/child",
+        "Artefacts dotenv",
+        "SSH"
+      ],
+      "pipeline": [
+        "provision | provision_infrastructure",
+        "build | build_mern_ecommerce ▸ child",
+        "scan | trivy_scan",
+        "deploy | deploy_traefik ▸ child, deploy_bus ▸ child, deploy_ticket ▸ child, deploy_ecommerce ▸ child"
+      ],
       "architecture": [],
-      "features": [],
       "screenshots": [],
       "github": "",
+      "missing": [
+        "Captures du pipeline",
+        "Lien vers le dépôt"
+      ]
+    },
+    {
+      "id": "conteneurs-traefik",
+      "name": "Conteneurisation et mise en production derrière Traefik",
+      "category": "Conteneurs · Sécurité",
+      "period": "2025",
       "featured": false,
-      "missing": ["Description du projet", "Architecture", "Fonctionnalités", "Captures d'écran", "Lien GitHub"]
+      "description": "Chaque application tourne dans ses conteneurs, exposée uniquement en HTTPS par un reverse proxy.",
+      "application": "Frontend React/Vite et backend Node.js de la boutique e-commerce, API de billetterie et application de transport, chacune sur son sous-domaine. Application fournie : je n'en ai pas écrit le code. Mon travail porte sur tout ce qui l'entoure.",
+      "contribution": [
+        "Dockerfiles du frontend et du backend",
+        "Images construites avec Podman dans le pipeline, versionnées et publiées sur Docker Hub",
+        "Analyse Trivy des images applicatives et des images de base (Traefik, MongoDB, Redis)",
+        "Un fichier Docker Compose par application, réseaux Docker partagés avec Traefik",
+        "Traefik 2 : routage par labels, redirection HTTP vers HTTPS, certificats Let's Encrypt (challenge HTTP)",
+        "Script d'installation de Docker et de démarrage du serveur"
+      ],
+      "stack": [
+        "Docker",
+        "Docker Compose",
+        "Docker Hub",
+        "Podman",
+        "Trivy",
+        "Traefik",
+        "Let's Encrypt"
+      ],
+      "pipeline": [],
+      "architecture": [
+        "Dockerfile",
+        "Image versionnée",
+        "Docker Hub",
+        "Trivy",
+        "Docker Compose",
+        "Traefik · HTTPS"
+      ],
+      "screenshots": [],
+      "github": "",
+      "missing": [
+        "Captures d'écran",
+        "Lien vers le dépôt"
+      ]
     },
     {
       "id": "terraform-cloud",
       "name": "Infrastructure Cloud avec Terraform",
       "category": "Infrastructure as Code",
-      "period": "",
-      "description": "",
-      "stack": ["Terraform", "HCP Terraform"],
-      "architecture": [],
-      "features": [],
+      "period": "2025",
+      "featured": false,
+      "description": "Le serveur et son réseau sont décrits en code et créés par le pipeline, sur AWS et sur Google Cloud.",
+      "application": "L'infrastructure héberge les applications conteneurisées du projet de déploiement. Application fournie : je n'en ai pas écrit le code. Mon travail porte sur tout ce qui l'entoure.",
+      "contribution": [
+        "AWS : VPC, sous-réseau public, passerelle Internet, table de routage, groupe de sécurité, paire de clés et instance EC2",
+        "Google Cloud : réseau VPC, sous-réseau, règles de pare-feu et instance Compute Engine (Ubuntu 22.04)",
+        "État et exécution gérés avec HCP Terraform",
+        "terraform init, plan et apply lancés depuis GitLab CI",
+        "Adresse IP publique exposée en sortie et réutilisée par les jobs de déploiement"
+      ],
+      "stack": [
+        "Terraform",
+        "HCP Terraform",
+        "AWS",
+        "Google Cloud Platform",
+        "GitLab CI"
+      ],
+      "pipeline": [],
+      "architecture": [
+        "Code Terraform",
+        "HCP Terraform",
+        "VPC + sous-réseau",
+        "Pare-feu",
+        "Instance (EC2 / Compute Engine)",
+        "IP publique → pipeline"
+      ],
       "screenshots": [],
       "github": "",
+      "missing": [
+        "Captures d'écran",
+        "Lien vers le dépôt"
+      ]
+    },
+    {
+      "id": "monitoring",
+      "name": "Monitoring avec Prometheus et Grafana",
+      "category": "Observabilité",
+      "period": "2025",
       "featured": false,
-      "missing": ["Description du projet", "Fournisseur cloud utilisé", "Architecture", "Captures d'écran", "Lien GitHub"]
+      "description": "Une pile de supervision complète surveille le serveur, les conteneurs et la disponibilité des applications, et alerte par email.",
+      "application": "La supervision couvre le serveur, les conteneurs et les points d'accès HTTP des applications déployées. Application fournie : je n'en ai pas écrit le code. Mon travail porte sur tout ce qui l'entoure.",
+      "contribution": [
+        "Pile Docker Compose : Prometheus, Grafana, Alertmanager, Node Exporter, cAdvisor et Blackbox Exporter",
+        "Règles d'alerte système, conteneurs et applications : CPU, mémoire, disque, conteneur arrêté ou en boucle de redémarrage, erreurs HTTP, temps de réponse, certificat SSL bientôt expiré",
+        "Alertmanager : envoi par email, modèles de message, routage par sévérité et règles d'inhibition",
+        "Sondes HTTP Blackbox sur les applications",
+        "Source de données et dashboards Grafana provisionnés par fichiers",
+        "Interfaces exposées en HTTPS derrière Traefik"
+      ],
+      "stack": [
+        "Prometheus",
+        "Grafana",
+        "Alertmanager",
+        "Node Exporter",
+        "cAdvisor",
+        "Blackbox Exporter",
+        "Docker Compose",
+        "Traefik"
+      ],
+      "pipeline": [],
+      "architecture": [
+        "Node Exporter · cAdvisor · Blackbox",
+        "Prometheus",
+        "Règles d'alerte",
+        "Alertmanager → email",
+        "Grafana"
+      ],
+      "screenshots": [],
+      "github": "",
+      "missing": [
+        "Captures des dashboards",
+        "Lien vers le dépôt"
+      ]
+    },
+    {
+      "id": "sauvegardes-ansible",
+      "name": "Automatisation de sauvegardes avec Ansible",
+      "category": "Automatisation",
+      "period": "2025",
+      "featured": false,
+      "description": "Un playbook rapatrie les données du serveur de production vers un poste de sauvegarde.",
+      "application": "Les données sauvegardées sont celles des applications déployées sur le serveur cloud. Application fournie : je n'en ai pas écrit le code. Mon travail porte sur tout ce qui l'entoure.",
+      "contribution": [
+        "Playbook et rôle Ansible « backup », inventaire du serveur",
+        "Installation de rsync sur le serveur distant",
+        "Synchronisation en mode pull vers la machine de sauvegarde",
+        "Exclusions : dépôts Git, journaux, fichiers temporaires, node_modules",
+        "Exécution planifiée avec Crontab"
+      ],
+      "stack": [
+        "Ansible",
+        "rsync",
+        "Crontab",
+        "SSH"
+      ],
+      "pipeline": [],
+      "architecture": [
+        "Crontab",
+        "Playbook Ansible",
+        "Serveur cloud (rsync)",
+        "Dossier de sauvegarde"
+      ],
+      "screenshots": [],
+      "github": "",
+      "missing": [
+        "Fréquence des sauvegardes",
+        "Captures d'écran",
+        "Lien vers le dépôt"
+      ]
     },
     {
       "id": "active-directory",
       "name": "Configuration d'un serveur Active Directory",
-      "category": "Projet académique",
+      "category": "Projet académique · Systèmes",
       "period": "",
-      "description": "Mise en place d'un contrôleur de domaine sous Windows Server et gestion de l'application des stratégies de groupe (GPO).",
-      "stack": ["Windows Server", "Active Directory", "GPO"],
-      "architecture": ["Windows Server", "Contrôleur de domaine", "Stratégies de groupe"],
-      "features": ["Contrôleur de domaine", "Application de stratégies de groupe (GPO)"],
+      "featured": false,
+      "description": "Mise en place d'un contrôleur de domaine sous Windows Server.",
+      "application": "Un domaine Active Directory de démonstration, monté dans le cadre de la licence.",
+      "contribution": [
+        "Mise en place du contrôleur de domaine sous Windows Server",
+        "Gestion et application des stratégies de groupe (GPO)"
+      ],
+      "stack": [
+        "Windows Server",
+        "Active Directory",
+        "GPO"
+      ],
+      "pipeline": [],
+      "architecture": [
+        "Windows Server",
+        "Contrôleur de domaine",
+        "Stratégies de groupe"
+      ],
       "screenshots": [],
       "github": "",
-      "featured": false,
-      "missing": ["Captures d'écran"]
-    },
-    {
-      "id": "site-ecommerce",
-      "name": "Développement d'un site e-commerce",
-      "category": "Projet académique",
-      "period": "",
-      "description": "Création d'un site web e-commerce avec HTML5, CSS3, JavaScript et PHP, et gestion de la base de données avec MySQL sur un serveur local XAMPP.",
-      "stack": ["HTML5", "CSS3", "JavaScript", "PHP", "MySQL", "XAMPP"],
-      "architecture": ["Front HTML/CSS/JS", "PHP", "MySQL (XAMPP)"],
-      "features": ["Site e-commerce", "Base de données MySQL"],
-      "screenshots": [],
-      "github": "",
-      "featured": false,
-      "missing": ["Captures d'écran", "Lien GitHub"]
+      "missing": [
+        "Captures d'écran"
+      ]
     }
   ],
   "certifications": [
@@ -363,7 +536,10 @@
       "date": "27 octobre 2026",
       "kind": "Attestation de MOOC",
       "credentialId": "198402218",
-      "skills": ["Passation de marchés", "Développement agricole et rural"],
+      "skills": [
+        "Passation de marchés",
+        "Développement agricole et rural"
+      ],
       "file": "itcilo-buildproc-mooc.pdf"
     },
     {
@@ -374,7 +550,9 @@
       "date": "9 juin 2025",
       "kind": "Course Completion Certificate",
       "credentialId": "570bd780-ceb3-4d28-8ab8-c976d13f1fe4",
-      "skills": ["Kubernetes"],
+      "skills": [
+        "Kubernetes"
+      ],
       "file": "kodekloud-kubernetes-challenges.jpg"
     },
     {
@@ -385,7 +563,10 @@
       "date": "7 juin 2025",
       "kind": "Course Completion Certificate",
       "credentialId": "6588f0ef-fefb-4e1c-a6a2-579cd70d08b6",
-      "skills": ["AWS ECS", "Conteneurs sur AWS"],
+      "skills": [
+        "AWS ECS",
+        "Conteneurs sur AWS"
+      ],
       "file": "kodekloud-aws-ecs.jpg"
     },
     {
@@ -396,7 +577,10 @@
       "date": "10 mars 2025",
       "kind": "Course completion",
       "credentialId": "",
-      "skills": ["Paysage des menaces", "Cybersécurité"],
+      "skills": [
+        "Paysage des menaces",
+        "Cybersécurité"
+      ],
       "file": "fortinet-fcf-threat-landscape.jpg"
     },
     {
@@ -407,7 +591,11 @@
       "date": "16 janvier 2025",
       "kind": "Certificate of Course Completion",
       "credentialId": "",
-      "skills": ["Sécurité en ligne", "Menaces, attaques et vulnérabilités", "Protection des organisations"],
+      "skills": [
+        "Sécurité en ligne",
+        "Menaces, attaques et vulnérabilités",
+        "Protection des organisations"
+      ],
       "file": "cisco-introduction-to-cybersecurity.jpg"
     },
     {
@@ -418,7 +606,14 @@
       "date": "3 août 2024",
       "kind": "Certificate of Course Completion",
       "credentialId": "",
-      "skills": ["Communication réseau", "Ethernet", "IPv4 / IPv6", "Routage", "Dépannage de connectivité", "Routeur sans fil"],
+      "skills": [
+        "Communication réseau",
+        "Ethernet",
+        "IPv4 / IPv6",
+        "Routage",
+        "Dépannage de connectivité",
+        "Routeur sans fil"
+      ],
       "file": "cisco-networking-basics.jpg"
     }
   ],
@@ -464,6 +659,12 @@
       "title": "Attestation CIF-OIT (ITCILO) / FIDA — BUILDPROC MOOC",
       "file": "itcilo-buildproc-mooc.pdf",
       "text": "Attestation délivrée à Tafitasoa Riana Nandrianina RAHAINGONANTENAINA. BUILDPROC MOOC : cours en ligne ouvert et massif (MOOC) sur la passation de marchés pour le développement agricole et rural. Organisé en coopération avec et financé par le Fonds international de développement agricole (FIDA). Signataires : Valentina Maksiutenko, responsable de projet BUILDPROC, DEVINVEST, CIF-OIT ; Enzo de Laurentiis, chef de la passation des marchés et de la gestion financière, FIDA. Numéro : 198402218. Date : 27 octobre 2026.\nNote : cette formation porte sur la passation de marchés, pas sur un sujet technique DevOps."
+    },
+    {
+      "id": "doc-depot-deploiement",
+      "title": "Dépôt « deploiement_automatiser » — configuration de l'infrastructure de déploiement",
+      "file": "",
+      "text": "Synthèse du dépôt GitLab du projet de déploiement automatisé (fichiers d'infrastructure rédigés par Rynah).\nPipeline parent .gitlab-ci.yml, quatre étapes exécutées sur la branche principale : provision, build, scan, deploy.\nProvision : image hashicorp/terraform, terraform init / plan / apply sur AWS avec authentification HCP Terraform (app.terraform.io) ; l'adresse IP publique de l'instance EC2 est écrite dans un artefact dotenv et transmise aux jobs suivants.\nBuild : pipeline enfant qui construit les images frontend et backend de l'application e-commerce avec Podman, puis les pousse sur Docker Hub (images versionnées).\nScan : Trivy analyse les vulnérabilités HIGH et CRITICAL des images applicatives et des images de base (Traefik, MongoDB, Redis).\nDeploy : pipelines enfants pour Traefik, l'application de transport en bus, l'API de billetterie et l'e-commerce ; connexion SSH au serveur, copie des fichiers Docker Compose, docker compose up. Traefik est déployé avant les applications (needs).\nTerraform AWS : VPC 10.0.0.0/16, passerelle Internet, sous-réseau public, table de routage, groupe de sécurité, paire de clés SSH, instance EC2 t2.micro en us-east-1, sortie public_ip.\nTerraform GCP : réseau VPC, sous-réseau, pare-feu (SSH, HTTP, HTTPS), instance Compute Engine e2-micro Ubuntu 22.04 en us-central1.\nTraefik 2.11 : points d'entrée 80 et 443, redirection permanente HTTP vers HTTPS, fournisseur Docker (exposition explicite par labels), certificats Let's Encrypt par challenge HTTP. Script de préparation du serveur : installation de Docker et Docker Compose, création des réseaux Docker.\nMonitoring (Docker Compose) : Prometheus, Grafana, Alertmanager, Node Exporter, cAdvisor, Blackbox Exporter. Règles d'alerte système (CPU, mémoire, disque, réseau), conteneurs (arrêt, boucle de redémarrage, CPU, disque) et applications (erreurs HTTP 4xx/5xx, temps de réponse, service ou base de données indisponible, certificat SSL bientôt expiré). Alertmanager envoie les alertes par email (SMTP), avec modèles de message, routage par sévérité et règles d'inhibition.\nAnsible : playbook et rôle « backup » qui installe rsync sur le serveur puis synchronise son contenu vers une machine de sauvegarde (mode pull), en excluant .git, journaux, fichiers temporaires et node_modules.\nApplications déployées : une boutique e-commerce MERN (React/Vite, Node.js, MongoDB, Redis), une API de billetterie et une application de transport en bus. Rynah n'a pas développé ces applications ; son travail porte sur l'infrastructure, les pipelines, la conteneurisation, la sécurité et le déploiement."
     }
   ],
   "notes": [
@@ -475,7 +676,12 @@
     {
       "id": "note-niveaux",
       "title": "Comment lire les compétences",
-      "text": "Compétences pratiquées en entreprise (stage HaiRun Technology, juin-septembre 2025) : GitLab CI avec pipelines Parent/Child dynamiques, Ansible et Crontab, Docker et Docker Compose, Traefik et SSL/TLS, Prometheus, Grafana, Alertmanager, Linux.\nCompétences pratiquées en projet académique : Windows Server, Active Directory, GPO ; HTML5, CSS3, JavaScript, PHP, MySQL.\nCompétences déclarées par Rynah sans projet documenté à ce jour : Terraform, HCP Terraform, Trivy, Docker Hub, Loki, Promtail, GitHub Actions, GCP, Azure.\nConnaissances issues de formations uniquement : AWS ECS (KodeKloud), Kubernetes (KodeKloud), fondamentaux réseau et cybersécurité (Cisco Networking Academy), paysage des menaces (Fortinet)."
+      "text": "Compétences pratiquées dans le projet de déploiement (stage HaiRun Technology, juin-septembre 2025) : GitLab CI avec pipelines parent/child, Terraform et HCP Terraform, AWS (EC2, VPC), Google Cloud (Compute Engine, VPC), Docker, Docker Compose, Docker Hub, Podman, Trivy, Traefik et SSL/TLS (Let's Encrypt), Prometheus, Grafana, Alertmanager, Ansible et Crontab, Linux.\nCompétences pratiquées en projet académique : Windows Server, Active Directory, GPO.\nCompétences déclarées par Rynah sans projet documenté à ce jour : Loki, Promtail, GitHub Actions, Azure.\nConnaissances issues de formations uniquement : AWS ECS (KodeKloud), Kubernetes (KodeKloud), fondamentaux réseau et cybersécurité (Cisco Networking Academy), paysage des menaces (Fortinet)."
+    },
+    {
+      "id": "note-role",
+      "title": "Rôle de Rynah dans les projets : DevOps et infrastructure, pas développement applicatif",
+      "text": "Rynah n'est pas le développeur frontend ou backend des applications et sites web présentés dans ses projets. Sa contribution est la partie DevOps et infrastructure : configuration des environnements, pipelines GitLab CI/CD, automatisation du build et du déploiement, conteneurisation Docker, publication des images sur Docker Hub, analyse de sécurité avec Trivy, déploiement sur le cloud, configuration des serveurs et services, automatisation avec Ansible, sauvegardes, reverse proxy et certificats SSL, tests de fiabilité et de bon fonctionnement des infrastructures. Son CV mentionne par ailleurs un projet académique de site e-commerce en HTML, CSS, JavaScript, PHP et MySQL."
     }
   ]
 }

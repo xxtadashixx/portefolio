@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Avatar } from "./Avatar";
 
 export const STAGES = [
   { id: "about", label: "about" },
@@ -15,7 +16,7 @@ export const STAGES = [
  * Habillage du site : navigation, rail « pipeline » qui suit le défilement,
  * barre d'état, et déclenchement des apparitions au scroll.
  */
-export function Chrome({ cvHref }: { cvHref: string | null }) {
+export function Chrome({ cvHref, name, avatarSrc }: { cvHref: string | null; name: string; avatarSrc: string | null }) {
   const [active, setActive] = useState(-1);
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -73,11 +74,9 @@ export function Chrome({ cvHref }: { cvHref: string | null }) {
     <>
       <header className={`nav${scrolled || open ? " scrolled" : ""}`}>
         <div className="wrap nav-in">
-          <a href="#top" className="brand" aria-label="Rynah Tadashi — accueil">
-            <span className="brand-mark">&gt;_</span>
-            <span>
-              rynah<em>@</em>cloud
-            </span>
+          <a href="#top" className="brand" aria-label={`${name} — accueil`}>
+            {avatarSrc ? <Avatar src={avatarSrc} name={name} /> : <span className="brand-mark">&gt;_</span>}
+            <span className="brand-name">{name}</span>
           </a>
           <button
             className="nav-toggle"

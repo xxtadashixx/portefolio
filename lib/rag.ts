@@ -22,7 +22,7 @@ export interface Index {
 }
 
 const EVIDENCE_TEXT: Record<string, string> = {
-  practiced: "pratiqué en entreprise (stage)",
+  practiced: "pratiqué en projet réel (stage)",
   academic: "pratiqué en projet académique",
   training: "connaissance issue d'une formation",
   declared: "compétence déclarée, sans projet documenté",
@@ -81,6 +81,16 @@ const EXPANSIONS: Record<string, string[]> = {
   speak: ["langue"],
   parle: ["langue"],
   resume: ["cv"],
+  developpeur: ["contribution", "role", "application"],
+  developer: ["contribution", "role", "application"],
+  developpe: ["contribution", "role", "application"],
+  developed: ["contribution", "role", "application"],
+  code: ["contribution", "role"],
+  role: ["contribution"],
+  sauvegarde: ["backup", "ansible"],
+  backup: ["sauvegarde", "ansible"],
+  vulnerabilite: ["trivy", "scan"],
+  https: ["ssl", "tls", "traefik", "certificat"],
   pipeline: ["ci", "cd", "gitlab"],
   conteneur: ["docker", "containerisation"],
   container: ["docker", "containerisation"],
@@ -198,7 +208,9 @@ export function buildChunks(c: Content): Chunk[] {
         documented ? x.description : "Ce projet est annoncé mais sa description n'est pas encore documentée.",
         x.stack.length && `Technologies : ${x.stack.join(", ")}.`,
         x.architecture.length && `Architecture : ${x.architecture.join(" → ")}.`,
-        x.features.length && `Fonctionnalités : ${x.features.join(" ; ")}.`,
+        x.application && `Application ou solution concernée : ${x.application}`,
+        x.contribution.length && `Contribution DevOps de Rynah : ${x.contribution.join(" ; ")}.`,
+        x.pipeline.length && `Pipeline : ${x.pipeline.map((s) => s.replace("|", ":")).join(" → ")}.`,
         x.github && `GitHub : ${x.github}`,
         x.missing.length && `Informations non disponibles : ${x.missing.join(", ")}.`,
       ]

@@ -4,6 +4,7 @@ import { llmConfigured } from "@/lib/llm";
 import { EVIDENCE_LABEL, type Evidence } from "@/lib/types";
 import { fileUrl } from "@/lib/commands";
 import { Chrome } from "@/components/Chrome";
+import { Avatar } from "@/components/Avatar";
 import { Particles } from "@/components/Particles";
 import { HeroLive } from "@/components/HeroLive";
 import { Logo } from "@/components/Logo";
@@ -44,6 +45,7 @@ export default async function Home() {
   const { profile: p, experience, education, skills, projects, certifications } = content;
   const [first, ...rest] = p.name.split(" ");
   const cvHref = p.cvFile ? fileUrl(p.cvFile, true) : null;
+  const avatarSrc = p.avatarFile ? fileUrl(p.avatarFile) : null;
   const evidences = [...new Set(skills.flatMap((s) => s.items.map((i) => i.evidence)))] as Evidence[];
 
   const jsonLd = {
@@ -64,7 +66,7 @@ export default async function Home() {
       <a href="#about" className="skip">
         Aller au contenu
       </a>
-      <Chrome cvHref={cvHref} />
+      <Chrome cvHref={cvHref} name={p.name} avatarSrc={avatarSrc} />
 
       <main id="top">
         {/* ---------------------------------------------------------------- Hero */}
@@ -73,10 +75,13 @@ export default async function Home() {
           <div className="wrap hero-grid">
             <div>
               <p className="eyebrow">~/portfolio · branch main · {p.location || "online"}</p>
-              <h1>
-                <span>{first}</span>
-                <span>{rest.join(" ")}</span>
-              </h1>
+              <div className="hero-id">
+                {avatarSrc && <Avatar src={avatarSrc} name={p.name} className="avatar-xl" />}
+                <h1>
+                  <span>{first}</span>
+                  <span>{rest.join(" ")}</span>
+                </h1>
+              </div>
               <p className="hero-role">{p.title}</p>
               <ul className="hero-tags" aria-label="Spécialités">
                 {p.tagline.split("|").map((t) => (
@@ -186,7 +191,7 @@ export default async function Home() {
               {evidences.map((ev) => (
                 <span key={ev}>
                   <span className={`tag tag-${ev}`}>{EVIDENCE_LABEL[ev]}</span>
-                  {ev === "practiced" && "utilisé en entreprise"}
+                  {ev === "practiced" && "mis en œuvre dans le projet de déploiement"}
                   {ev === "academic" && "utilisé pendant la licence"}
                   {ev === "training" && "cours certifié suivi"}
                   {ev === "declared" && "sans projet documenté ici pour l'instant"}
@@ -235,9 +240,9 @@ export default async function Home() {
           <div className="wrap">
             <SectionHead
               cmd="git log --projects"
-              title="Mes"
-              accent="réalisations"
-              sub="Les fiches marquées « à compléter » attendent encore leurs détails, captures et liens."
+              title="Mes réalisations"
+              accent="DevOps"
+              sub="Chaque fiche sépare l'application concernée de ce que j'ai réalisé moi-même."
             />
             <Projects projects={projects} />
           </div>
@@ -364,7 +369,7 @@ export default async function Home() {
         </div>
       </footer>
 
-      <Assistant enabled={llmConfigured()} />
+      <Assistant enabled={llmConfigured()} avatarSrc={avatarSrc} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
     </>
   );

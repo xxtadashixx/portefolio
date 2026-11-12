@@ -226,9 +226,66 @@ svg {
   font-weight: 800;
   font-size: 13px;
 }
-.brand em {
-  font-style: normal;
-  color: var(--cyan);
+.brand-name {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* --- Avatar pixel art ------------------------------------------------------- */
+.avatar {
+  position: relative;
+  flex: 0 0 auto;
+  display: block;
+  width: 38px;
+  aspect-ratio: 1;
+  border-radius: 9px;
+  overflow: hidden;
+  background:
+    linear-gradient(rgba(34, 211, 238, 0.07) 1px, transparent 1px) 0 0 / 100% 12.5%,
+    linear-gradient(160deg, #0d1730, #150f33);
+  box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.45), 0 0 0 3px rgba(34, 211, 238, 0.08);
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s;
+}
+.avatar img {
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+}
+/* Balayage lumineux au survol : le cadre s'anime, le visage ne bouge pas */
+.avatar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 40%, rgba(34, 211, 238, 0.28) 50%, transparent 60%);
+  transform: translateY(-100%);
+  pointer-events: none;
+}
+.avatar:hover,
+.brand:hover .avatar {
+  transform: translateY(-2px);
+  box-shadow: 0 0 0 1px var(--cyan), 0 0 0 4px rgba(34, 211, 238, 0.14), 0 10px 30px -8px rgba(34, 211, 238, 0.65);
+}
+.avatar:hover::after,
+.brand:hover .avatar::after {
+  animation: scan 0.9s ease-out;
+}
+@keyframes scan {
+  to {
+    transform: translateY(100%);
+  }
+}
+.avatar-xl {
+  width: clamp(88px, 12vw, 164px);
+  border-radius: clamp(12px, 1.4vw, 18px);
+}
+.hero-id {
+  display: flex;
+  align-items: center;
+  gap: clamp(14px, 2vw, 26px);
+  margin: 22px 0 16px;
 }
 .nav-links {
   display: flex;
@@ -619,8 +676,8 @@ section {
   box-shadow: 0 0 12px var(--green);
 }
 .hero h1 {
-  margin: 22px 0 14px;
-  font-size: clamp(46px, 8.4vw, 104px);
+  margin: 0;
+  font-size: clamp(40px, 6.6vw, 86px);
   line-height: 0.92;
   letter-spacing: -0.045em;
   font-weight: 700;
@@ -1145,9 +1202,6 @@ section {
 
 /* --- Projets ---------------------------------------------------------------- */
 .proj-featured {
-  display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
-  gap: 32px;
   padding: 32px;
   margin-bottom: 20px;
   overflow: hidden;
@@ -1311,6 +1365,10 @@ dialog.modal[open] {
   display: grid;
   gap: 22px;
 }
+/* Sans cela, le pipeline (défilant) élargit la grille au-delà de la fenêtre */
+.modal-body > * {
+  min-width: 0;
+}
 .modal-body .block-title {
   margin: 0 0 10px;
 }
@@ -1338,9 +1396,206 @@ dialog.modal[open] {
 }
 @media (max-width: 860px) {
   .proj-featured {
-    grid-template-columns: 1fr;
-    padding: 24px;
+    padding: 22px;
   }
+}
+
+.role-note {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 14px;
+  margin-bottom: 22px;
+  padding: 14px 18px;
+  border-left: 3px solid var(--cyan);
+  border-radius: 0 10px 10px 0;
+  background: rgba(34, 211, 238, 0.06);
+  font-size: 15.5px;
+}
+.role-note b {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cyan);
+}
+.proj-lead {
+  max-width: 760px;
+  font-size: 17px;
+  color: #b9c5da;
+}
+.proj-featured .block-title {
+  margin: 28px 0 12px;
+}
+
+/* Les deux parties d'une fiche : l'application, puis ma contribution */
+.parts {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: 14px;
+  margin-top: 22px;
+}
+.modal .parts {
+  grid-template-columns: 1fr;
+  margin-top: 0;
+}
+.part {
+  padding: 18px 20px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  font-size: 14.5px;
+}
+.part-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.part-title::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: currentColor;
+}
+.part-app {
+  color: #b9c5da;
+}
+.part-app .part-title {
+  color: var(--violet);
+}
+.part-me {
+  border-color: rgba(34, 211, 238, 0.4);
+  background: linear-gradient(160deg, rgba(34, 211, 238, 0.07), rgba(79, 140, 255, 0.04));
+}
+.part-me .part-title {
+  color: var(--cyan);
+}
+@media (max-width: 760px) {
+  .parts {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Pipeline : colonnes d'étapes reliées, comme dans GitLab */
+.pipe {
+  display: flex;
+  gap: 34px;
+  padding: 4px 2px 10px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+.pipe-stage {
+  position: relative;
+  flex: 1 0 168px;
+}
+.pipe-stage + .pipe-stage::before {
+  content: "";
+  position: absolute;
+  left: -34px;
+  top: 49px;
+  width: 34px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--green), var(--cyan));
+  opacity: 0.7;
+}
+.pipe-name {
+  margin-bottom: 10px;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.pipe-name span {
+  margin-right: 8px;
+  color: var(--muted);
+  font-weight: 400;
+}
+.pipe-stage ul {
+  display: grid;
+  gap: 8px;
+}
+.pipe-stage li {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 38px;
+  padding: 6px 12px 6px 8px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: var(--panel-solid);
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.3;
+}
+.pipe-stage li i {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid var(--green);
+  color: var(--green);
+  font-style: normal;
+  font-size: 11px;
+}
+
+/* Architecture : composants reliés par des flèches */
+.flow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 0;
+  font-family: var(--mono);
+  font-size: 12.5px;
+}
+.flow li {
+  display: flex;
+  align-items: center;
+  padding: 9px 13px;
+  border: 1px solid var(--line-strong);
+  border-radius: 9px;
+  background: var(--panel-solid);
+}
+.flow li:not(:last-child) {
+  margin-right: 30px;
+  position: relative;
+}
+.flow li:not(:last-child)::after {
+  content: "→";
+  position: absolute;
+  right: -23px;
+  color: var(--cyan);
+}
+.flow-sm {
+  font-size: 11px;
+  gap: 6px 0;
+}
+.flow-sm li {
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+.flow-sm li:not(:last-child) {
+  margin-right: 20px;
+}
+.flow-sm li:not(:last-child)::after {
+  right: -16px;
+}
+.proj-count {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+.proj-count b {
+  color: var(--green);
 }
 
 /* --- Certifications --------------------------------------------------------- */
@@ -1704,6 +1959,16 @@ footer.foot {
 }
 .ai-fab:hover {
   transform: translateY(-3px);
+}
+.ai-fab .fab-face {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: #0d1730;
+  image-rendering: pixelated;
+}
+.ai-head .avatar {
+  width: 36px;
 }
 .ai-fab .orb {
   position: relative;

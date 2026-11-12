@@ -12,6 +12,7 @@ export interface Profile {
   linkedin: string;
   github: string;
   cvFile: string;
+  avatarFile: string;
   domains: string[];
   softSkills: string[];
   languages: string[];
@@ -50,10 +51,16 @@ export interface Project {
   name: string;
   category: string;
   period: string;
+  /** Résumé en une phrase */
   description: string;
+  /** L'application ou la solution concernée (souvent développée par d'autres) */
+  application: string;
+  /** Ce que Rynah a réalisé lui-même */
+  contribution: string[];
   stack: string[];
+  /** Étapes du pipeline, une par ligne : « étape | job, job » */
+  pipeline: string[];
   architecture: string[];
-  features: string[];
   screenshots: string[];
   github: string;
   featured: boolean;
@@ -106,7 +113,7 @@ export interface ContactMessage {
 }
 
 export const EVIDENCE_LABEL: Record<Evidence, string> = {
-  practiced: "Pratiqué en stage",
+  practiced: "Pratiqué en projet",
   academic: "Projet académique",
   training: "Formation suivie",
   declared: "Déclaré",

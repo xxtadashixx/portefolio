@@ -34,3 +34,9 @@ test("la validation écarte les liens non http", () => {
   const c = validateContent({ profile: { name: "X", github: "javascript:alert(1)" } });
   assert.equal(c.profile.github, "");
 });
+
+test("le rôle DevOps est rappelé quand on demande s'il a développé les applications", () => {
+  assert.ok(ids("A-t-il développé le site e-commerce ?").some((id) => id.startsWith("note-role")));
+  assert.ok(ids("Comment sont faites les sauvegardes ?").includes("projet-sauvegardes-ansible"));
+  for (const p of content.projects) assert.ok(p.application && p.contribution.length, p.id);
+});

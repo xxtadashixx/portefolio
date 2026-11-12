@@ -112,14 +112,20 @@ export function run(input: string, c: Content, history: string[] = []): Result {
 
     case "projects":
       return {
-        lines: c.projects.flatMap((x, i) => [
+        lines: [
+          l(m("Mon rôle sur ces projets : l'infrastructure et le déploiement, pas le code des applications.")),
+          blank,
+          ...c.projects.flatMap((x, i) => [
           l(a(`[${String(i + 1).padStart(2, "0")}] ${x.name}`)),
           l("     ", m(x.category || "—")),
           x.description ? l("     ", x.description) : l("     ", { t: "fiche à compléter", c: "w" }),
+          ...x.contribution.slice(0, 4).map((t) => l("     ", { t: "+ ", c: "ok" }, t)),
+          x.contribution.length > 4 ? l("     ", m(`… et ${x.contribution.length - 4} autres contributions`)) : blank,
           x.stack.length ? l("     ", k("stack "), x.stack.join(", ")) : blank,
           x.github ? l("     ", k("repo  "), link(x.github, x.github)) : blank,
           blank,
         ]),
+        ],
       };
 
     case "certifications":

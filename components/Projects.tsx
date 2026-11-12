@@ -13,6 +13,82 @@ function Todo({ items }: { items: string[] }) {
   );
 }
 
+/** Pipeline façon GitLab : une colonne par étape, une pastille par job. */
+function PipelineGraph({ stages }: { stages: string[] }) {
+  const parsed = stages.map((line) => {
+    const [name, jobs = ""] = line.split("|");
+    return { name: name.trim(), jobs: jobs.split(",").map((j) => j.trim()).filter(Boolean) };
+  });
+  if (!parsed.length) return null;
+  return (
+    <div className="pipe" role="img" aria-label={`Pipeline : ${parsed.map((s) => `${s.name} (${s.jobs.join(", ")})`).join(", puis ")}`}>
+      {parsed.map((stage, i) => (
+        <div key={stage.name + i} className="pipe-stage" style={{ "--n": i } as React.CSSProperties}>
+          <p className="pipe-name">
+            <span>{String(i + 1).padStart(2, "0")}</span>
+            {stage.name}
+          </p>
+          <ul>
+            {stage.jobs.map((job) => (
+              <li key={job}>
+                <i aria-hidden="true">✓</i>
+                {job}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/** Architecture : chaîne de composants reliés par des flèches. */
+function ArchFlow({ steps, compact }: { steps: string[]; compact?: boolean }) {
+  if (!steps.length) return null;
+  return (
+    <ol className={`flow${compact ? " flow-sm" : ""}`} aria-label="Architecture">
+      {steps.map((step) => (
+        <li key={step}>{step}</li>
+      ))}
+    </ol>
+  );
+}
+
+function TwoParts({ project }: { project: Project }) {
+  return (
+    <div className="parts">
+      <div className="part part-app">
+        <p className="part-title">Application / Solution</p>
+        {project.application ? <p>{project.application}</p> : <Todo items={["Présentation de l'application"]} />}
+      </div>
+      <div className="part part-me">
+        <p className="part-title">My DevOps Contribution</p>
+        {project.contribution.length ? (
+          <ul className="feat">
+            {project.contribution.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        ) : (
+          <Todo items={["Tâches réalisées"]} />
+        )}
+      </div>
+    </div>
+  );
+}
+
+function Stack({ items }: { items: string[] }) {
+  return (
+    <ul className="chips">
+      {items.map((s) => (
+        <li key={s} className="chip">
+          {s}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 export function Projects({ projects }: { projects: Project[] }) {
   const featured = projects.find((p) => p.featured);
   const others = projects.filter((p) => p !== featured);
@@ -26,52 +102,39 @@ export function Projects({ projects }: { projects: Project[] }) {
 
   return (
     <>
+      <p className="role-note" data-reveal>
+        <b>Mon rôle</b>
+        Je n&apos;ai pas développé les applications présentées ici. J&apos;ai conçu ce qui les fait tourner : environnements,
+        pipelines, conteneurs, cloud, sécurité et supervision.
+      </p>
+
       {featured && (
         <article className="card proj-featured" data-reveal>
-          <div>
-            <p className="proj-kicker">
-              ★ {featured.category}
-              {featured.period && ` · ${featured.period}`}
-            </p>
-            <h3>{featured.name}</h3>
-            <p>{featured.description}</p>
-            <ul className="chips">
-              {featured.stack.map((s) => (
-                <li key={s} className="chip">
-                  {s}
-                </li>
-              ))}
-            </ul>
-            <ul className="feat">
-              {featured.features.map((f) => (
-                <li key={f}>{f}</li>
-              ))}
-            </ul>
-            <div className="hero-cta">
-              <button className="btn btn-sm" onClick={() => show(featured)}>
-                Voir la fiche complète
-              </button>
-              {featured.github && (
-                <a className="btn btn-sm" href={featured.github} target="_blank" rel="noopener noreferrer">
-                  GitHub ↗
-                </a>
-              )}
-            </div>
-          </div>
+          <p className="proj-kicker">
+            ★ {featured.category}
+            {featured.period && ` · ${featured.period}`}
+          </p>
+          <h3>{featured.name}</h3>
+          <p className="proj-lead">{featured.description}</p>
+          {featured.pipeline.length > 0 && (
+            <>
+              <p className="block-title">pipeline ci/cd</p>
+              <PipelineGraph stages={featured.pipeline} />
+            </>
+          )}
+          <TwoParts project={featured} />
           {featured.architecture.length > 0 && (
-            <div>
-              <p className="block-title" style={{ marginTop: 0 }}>
-                architecture
-              </p>
-              <ol className="arch">
-                {featured.architecture.map((step, i) => (
-                  <li key={step}>
-                    <span>{String(i + 1).padStart(2, "0")}</span>
-                    {step}
-                  </li>
-                ))}
-              </ol>
-            </div>
+            <>
+              <p className="block-title">architecture</p>
+              <ArchFlow steps={featured.architecture} />
+            </>
+          )}
+          <p className="block-title">technologies</p>
+          <Stack items={featured.stack} />
+          {featured.github && (
+            <a className="btn btn-sm" href={featured.github} target="_blank" rel="noopener noreferrer" style={{ marginTop: 22 }}>
+              Voir le dépôt ↗
+            </a>
           )}
         </article>
       )}
@@ -88,14 +151,11 @@ export function Projects({ projects }: { projects: Project[] }) {
             <span className="proj-kicker">{p.category || "Projet"}</span>
             <h3>{p.name}</h3>
             {p.description ? <p>{p.description}</p> : <Todo items={["Fiche projet à renseigner"]} />}
-            <span className="chips">
-              {p.stack.slice(0, 5).map((s) => (
-                <span key={s} className="chip">
-                  {s}
-                </span>
-              ))}
+            <ArchFlow steps={(p.architecture.length ? p.architecture : p.pipeline.map((l) => l.split("|")[0].trim())).slice(0, 4)} compact />
+            <span className="proj-count">
+              <b>{p.contribution.length}</b> contributions DevOps
             </span>
-            <span className="more">Détails</span>
+            <span className="more">Application &amp; contribution</span>
           </button>
         ))}
       </div>
@@ -121,40 +181,24 @@ export function Projects({ projects }: { projects: Project[] }) {
               </button>
             </div>
             <div className="modal-body">
-              {current.description && <p>{current.description}</p>}
-              {current.stack.length > 0 && (
+              {current.description && <p className="proj-lead">{current.description}</p>}
+              <TwoParts project={current} />
+              {current.pipeline.length > 0 && (
                 <div>
-                  <p className="block-title">technologies</p>
-                  <ul className="chips">
-                    {current.stack.map((s) => (
-                      <li key={s} className="chip">
-                        {s}
-                      </li>
-                    ))}
-                  </ul>
+                  <p className="block-title">pipeline ci/cd</p>
+                  <PipelineGraph stages={current.pipeline} />
                 </div>
               )}
               {current.architecture.length > 0 && (
                 <div>
                   <p className="block-title">architecture</p>
-                  <ol className="arch">
-                    {current.architecture.map((step, i) => (
-                      <li key={step}>
-                        <span>{String(i + 1).padStart(2, "0")}</span>
-                        {step}
-                      </li>
-                    ))}
-                  </ol>
+                  <ArchFlow steps={current.architecture} />
                 </div>
               )}
-              {current.features.length > 0 && (
+              {current.stack.length > 0 && (
                 <div>
-                  <p className="block-title">fonctionnalités</p>
-                  <ul className="feat">
-                    {current.features.map((f) => (
-                      <li key={f}>{f}</li>
-                    ))}
-                  </ul>
+                  <p className="block-title">technologies</p>
+                  <Stack items={current.stack} />
                 </div>
               )}
               {current.screenshots.length > 0 && (
@@ -172,7 +216,7 @@ export function Projects({ projects }: { projects: Project[] }) {
               )}
               {current.github && (
                 <a className="btn btn-sm" href={current.github} target="_blank" rel="noopener noreferrer" style={{ justifySelf: "start" }}>
-                  Voir sur GitHub ↗
+                  Voir le dépôt ↗
                 </a>
               )}
               <Todo items={current.missing} />
