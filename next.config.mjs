@@ -7,7 +7,10 @@ const securityHeaders = [
 ];
 
 export default {
-  output: "standalone",
+  // Image Docker : sortie autonome. Render et Vercel utilisent la sortie standard.
+  output: process.env.NEXT_OUTPUT === "standalone" ? "standalone" : undefined,
+  // Le contenu initial est lu sur disque à l'exécution : il doit suivre les fonctions serveur.
+  outputFileTracingIncludes: { "/**": ["./content/seed/**/*"] },
   poweredByHeader: false,
   serverExternalPackages: ["pdf-parse"],
   async headers() {

@@ -25,12 +25,28 @@ export async function POST(req: Request) {
   if (message.length < 10 || message.length > 4000) errors.message = "Votre message doit contenir entre 10 et 4000 caractères.";
   if (Object.keys(errors).length) return Response.json({ error: "Formulaire invalide.", errors }, { status: 422 });
 
-  const saved = await addMessage({ name, email, message });
   const hook = process.env.CONTACT_WEBHOOK_URL;
+  let stored = true;
+  try {
+    await addMessage({ name, email, message });
+  } catch (e) {
+    // Disque en lecture seule ou plein : le message ne doit pas être perdu en silence.
+    stored = false;
+    console.error("[contact] stockage", e instanceof Error ? e.message : e);
+  }
+  let forwarded = false;
   if (hook) {
-    fetch(hook, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(saved) }).catch(
-      (e) => console.error("[contact] webhook", e?.message),
-    );
+    forwarded = await fetch(hook, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, message, at: new Date().toISOString() }),
+      signal: AbortSignal.timeout(5000),
+    })
+      .then((r) => r.ok)
+      .catch(() => false);
+  }
+  if (!stored && !forwarded) {
+    return Response.json({ error: "Le message n'a pas pu être enregistré. Écrivez-moi directement par email." }, { status: 503 });
   }
   return Response.json({ ok: true });
 }

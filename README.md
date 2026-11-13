@@ -22,6 +22,19 @@ Le conteneur écoute sur le port 3000 ; les données modifiables vivent dans le 
 `portfolio-data` (`/data`). Placez-le derrière votre reverse proxy (Traefik, etc.) pour
 le HTTPS.
 
+## Hébergement
+
+- **Render** : le fichier `render.yaml` décrit le service. Ouvrir
+  `https://render.com/deploy?repo=https://github.com/xxtadashixx/portefolio`, puis
+  renseigner les variables dans le tableau de bord.
+- **Vercel** : importer le dépôt, aucune configuration de build n'est nécessaire.
+
+Sur ces deux hébergeurs, le disque n'est pas conservé (sans disque persistant payant
+sur Render, jamais sur Vercel) : les modifications faites dans `/admin` et les messages
+de contact disparaissent au redéploiement. Pour un contenu durable, modifiez
+`content/seed/content.json` dans le dépôt, ou hébergez avec Docker et un volume.
+Définissez `CONTACT_WEBHOOK_URL` pour recevoir les messages ailleurs.
+
 ## Configuration
 
 | Variable | Rôle |

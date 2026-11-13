@@ -1944,31 +1944,417 @@ footer.foot {
   display: flex;
   align-items: center;
   gap: 10px;
-  height: 52px;
-  padding: 0 18px 0 14px;
-  border: 0;
+  height: 58px;
+  padding: 0 20px 0 10px;
+  border: 2px solid transparent;
   border-radius: 999px;
-  background: var(--grad);
-  color: #020617;
+  background:
+    linear-gradient(#0a0f1f, #0a0f1f) padding-box,
+    var(--grad) border-box;
+  color: var(--text);
   font-family: var(--mono);
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
   box-shadow: 0 14px 40px -10px rgba(79, 140, 255, 0.8);
-  transition: transform 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 .ai-fab:hover {
   transform: translateY(-3px);
+  box-shadow: 0 18px 46px -8px rgba(192, 38, 211, 0.7);
 }
-.ai-fab .fab-face {
-  width: 30px;
-  height: 30px;
-  border-radius: 8px;
-  background: #0d1730;
-  image-rendering: pixelated;
+.fab-bot,
+.ai-bot {
+  display: grid;
+  place-items: center;
 }
-.ai-head .avatar {
-  width: 36px;
+
+/* --- Robot TADASHI AI : mouvements par humeur ------------------------------- */
+.robot {
+  overflow: visible;
+}
+.robot-body,
+.robot-eyes,
+.robot-mouth,
+.robot-ear,
+.robot-hand,
+.robot-bubble {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.robot-body {
+  animation: bot-float 3.2s ease-in-out infinite;
+}
+.robot-eyes {
+  animation: bot-blink 4.4s infinite;
+}
+.robot-face {
+  animation: bot-face 0.3s steps(3);
+}
+.robot-led {
+  fill: var(--green);
+  animation: bot-led 1.8s ease-in-out infinite;
+}
+@keyframes bot-float {
+  50% {
+    transform: translateY(-3px);
+  }
+}
+@keyframes bot-blink {
+  0%,
+  91%,
+  100% {
+    transform: scaleY(1);
+  }
+  95% {
+    transform: scaleY(0.12);
+  }
+}
+@keyframes bot-face {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+@keyframes bot-led {
+  50% {
+    opacity: 0.25;
+  }
+}
+
+/* pensif : oreilles qui frétillent, regard en coin, bulle binaire */
+.robot-thinking .robot-ear {
+  transform-origin: bottom;
+  animation: bot-ear 0.9s ease-in-out infinite alternate;
+}
+.robot-thinking .robot-ear-r {
+  animation-delay: -0.45s;
+}
+.robot-thinking .robot-eyes {
+  animation: bot-look 2.4s steps(1) infinite;
+}
+.robot-thinking .robot-led {
+  fill: var(--amber);
+  animation-duration: 0.5s;
+}
+.robot-thinking .robot-hand {
+  animation: bot-tap 1.2s steps(2) infinite;
+}
+.robot-bubble {
+  animation: bot-bubble 1.4s steps(4) infinite;
+}
+@keyframes bot-ear {
+  from {
+    transform: rotate(-5deg);
+  }
+  to {
+    transform: rotate(5deg);
+  }
+}
+@keyframes bot-look {
+  0% {
+    transform: translate(-3px, -1px);
+  }
+  50% {
+    transform: translate(3px, -1px);
+  }
+}
+@keyframes bot-tap {
+  50% {
+    transform: translateY(-2px);
+  }
+}
+@keyframes bot-bubble {
+  0% {
+    opacity: 0.3;
+    transform: translateY(3px);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0.6;
+    transform: translateY(-3px);
+  }
+}
+/* répond : petit rebond, la bouche s'anime */
+.robot-grin .robot-body {
+  animation: bot-bounce 0.42s ease-in-out infinite alternate;
+}
+.robot-grin .robot-mouth {
+  transform-origin: top;
+  animation: bot-talk 0.3s steps(2) infinite;
+}
+@keyframes bot-bounce {
+  to {
+    transform: translateY(-5px);
+  }
+}
+@keyframes bot-talk {
+  50% {
+    transform: scaleY(0.55);
+  }
+}
+.robot-surprised .robot-body {
+  animation: bot-pop 0.45s cubic-bezier(0.2, 1.6, 0.4, 1);
+}
+@keyframes bot-pop {
+  from {
+    transform: scale(0.8);
+  }
+}
+.robot-sad .robot-body {
+  animation: bot-droop 4s ease-in-out infinite;
+}
+.robot-sad .robot-led {
+  fill: var(--muted);
+}
+.robot-tear {
+  animation: bot-tear 1.6s steps(5) infinite;
+}
+@keyframes bot-droop {
+  50% {
+    transform: translateY(3px) rotate(-2deg);
+  }
+}
+@keyframes bot-tear {
+  to {
+    transform: translateY(9px);
+    opacity: 0;
+  }
+}
+.robot-confused .robot-body {
+  animation: bot-tilt 1.6s ease-in-out infinite alternate;
+}
+.robot-confused .robot-led {
+  fill: var(--violet);
+}
+@keyframes bot-tilt {
+  from {
+    transform: rotate(-8deg);
+  }
+  to {
+    transform: rotate(5deg);
+  }
+}
+.robot-wink .robot-body {
+  animation: bot-nod 0.5s ease-out;
+}
+@keyframes bot-nod {
+  40% {
+    transform: rotate(7deg) translateY(-2px);
+  }
+}
+.robot-angry .robot-body {
+  animation: bot-shake 0.16s linear infinite;
+}
+.robot-angry .robot-led,
+.robot-error .robot-led {
+  fill: var(--red);
+  animation-duration: 0.35s;
+}
+@keyframes bot-shake {
+  25% {
+    transform: translateX(-2px);
+  }
+  75% {
+    transform: translateX(2px);
+  }
+}
+.robot-error .robot-face {
+  animation: bot-glitch 0.9s steps(1) infinite;
+}
+.robot-error .robot-eyes {
+  animation: none;
+}
+@keyframes bot-glitch {
+  0% {
+    opacity: 1;
+    transform: none;
+  }
+  40% {
+    opacity: 0.35;
+    transform: translateX(2px);
+  }
+  55% {
+    opacity: 1;
+    transform: translateX(-2px);
+  }
+  70% {
+    transform: none;
+  }
+}
+.ai-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: var(--green);
+}
+.ai-dot-thinking {
+  background: var(--amber);
+}
+.ai-dot-sad {
+  background: var(--muted);
+}
+.ai-dot-angry,
+.ai-dot-error {
+  background: var(--red);
+}
+.ai-dot-confused {
+  background: var(--violet);
+}
+
+/* --- Pluie de logos -------------------------------------------------------- */
+.rain {
+  height: 230px;
+  margin-bottom: 26px;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(79, 140, 255, 0.08), rgba(12, 18, 32, 0.4));
+}
+.rain-hud {
+  position: absolute;
+  inset: 12px 16px auto 16px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+  pointer-events: none;
+}
+.rain-hud b {
+  margin-left: auto;
+  color: var(--green);
+  font-weight: 600;
+}
+.rain-hud em {
+  order: 1;
+  font-style: normal;
+  color: var(--cyan);
+  animation: line-in 0.3s ease-out;
+}
+.drop {
+  position: absolute;
+  top: -64px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  background: var(--panel-solid);
+  cursor: pointer;
+  animation: fall linear infinite;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.drop span {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  animation: sway 2.6s ease-in-out infinite alternate;
+}
+.drop svg {
+  width: 56%;
+  fill: currentColor;
+}
+.drop:hover,
+.drop:focus-visible {
+  animation-play-state: paused;
+  border-color: currentColor;
+  box-shadow: 0 0 22px -4px currentColor;
+}
+.drop.seen {
+  border-color: rgba(74, 222, 128, 0.45);
+}
+.rain.paused .drop,
+.rain.paused .drop span {
+  animation-play-state: paused;
+}
+@keyframes fall {
+  to {
+    transform: translateY(320px);
+  }
+}
+@keyframes sway {
+  from {
+    transform: rotate(-12deg);
+  }
+  to {
+    transform: rotate(12deg);
+  }
+}
+/* Clic : le logo éclate, un anneau et des étincelles partent du centre */
+.drop.pop {
+  animation-play-state: paused;
+  pointer-events: none;
+  border-color: transparent;
+  background: transparent;
+}
+.drop.pop span {
+  animation: drop-pop 0.6s cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
+}
+.drop.pop::before,
+.drop.pop::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  border-radius: 50%;
+  pointer-events: none;
+}
+.drop.pop::before {
+  width: 100%;
+  height: 100%;
+  margin: -50% 0 0 -50%;
+  border: 2px solid currentColor;
+  animation: drop-ring 0.6s ease-out forwards;
+}
+.drop.pop::after {
+  width: 4px;
+  height: 4px;
+  margin: -2px 0 0 -2px;
+  background: transparent;
+  box-shadow:
+    0 -22px currentColor,
+    19px -11px var(--cyan),
+    19px 11px currentColor,
+    0 22px var(--violet),
+    -19px 11px currentColor,
+    -19px -11px var(--cyan);
+  animation: drop-sparks 0.6s ease-out forwards;
+}
+@keyframes drop-pop {
+  35% {
+    transform: scale(1.5) rotate(10deg);
+  }
+  100% {
+    transform: scale(0) rotate(-40deg);
+    opacity: 0;
+  }
+}
+@keyframes drop-ring {
+  from {
+    transform: scale(0.6);
+    opacity: 1;
+  }
+  to {
+    transform: scale(2.3);
+    opacity: 0;
+  }
+}
+@keyframes drop-sparks {
+  from {
+    transform: scale(0.3);
+    opacity: 1;
+  }
+  to {
+    transform: scale(1.9);
+    opacity: 0;
+  }
 }
 .ai-fab .orb {
   position: relative;
@@ -2209,12 +2595,10 @@ footer.foot {
   .ai-fab {
     right: 14px;
     bottom: 14px;
+    padding: 0 8px;
   }
   .ai-fab .lbl {
     display: none;
-  }
-  .ai-fab {
-    padding: 0 13px;
   }
 }
 
@@ -2414,5 +2798,17 @@ footer.foot {
   .fx [data-reveal] {
     opacity: 1;
     transform: none;
+  }
+  /* Sans animation, les logos sont posés en ligne et restent cliquables */
+  .rain {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    height: auto;
+    padding: 46px 16px 16px;
+  }
+  .drop {
+    position: static;
+    animation: none;
   }
 }

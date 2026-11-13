@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { Robot, MOOD_LABEL, type Mood } from "./Robot";
 
 interface Msg {
   role: "user" | "assistant";
@@ -70,7 +71,23 @@ function Rich({ text }: { text: string }) {
   return <>{blocks}</>;
 }
 
-export function Assistant({ enabled, avatarSrc }: { enabled: boolean; avatarSrc: string | null }) {
+/** Réponse où l'assistant signale une information absente : le robot prend l'air perplexe. */
+const UNSURE = /pas disponible|ne figure pas|n'est pas (mentionn|précis|document)|not available|no information|don't have|isn't (mentioned|documented)/i;
+
+export function Assistant({ enabled }: { enabled: boolean }) {
+  const [mood, setMoodState] = useState<Mood>(enabled ? "happy" : "sad");
+  const [hover, setHover] = useState(false);
+  const moodTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const rest: Mood = enabled ? "happy" : "sad";
+  /** Change d'humeur ; avec `ms`, revient à l'humeur de repos après ce délai. */
+  const setMood = useCallback(
+    (next: Mood, ms?: number) => {
+      clearTimeout(moodTimer.current);
+      setMoodState(next);
+      if (ms) moodTimer.current = setTimeout(() => setMoodState(rest), ms);
+    },
+    [rest],
+  );
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([]);
   const [value, setValue] = useState("");
@@ -88,6 +105,9 @@ export function Assistant({ enabled, avatarSrc }: { enabled: boolean; avatarSrc:
       const history = [...state.current.messages.filter((m) => !m.error), { role: "user" as const, content: text }];
       setMessages([...state.current.messages, { role: "user", content: text }, { role: "assistant", content: "" }]);
       setBusy(true);
+      setMood("thinking");
+      let answer = "";
+      let failed: Mood | null = null;
       const patch = (fn: (last: Msg) => Msg) => setMessages((all) => [...all.slice(0, -1), fn(all[all.length - 1])]);
       const fail = (error: string) => patch((last) => ({ ...last, content: last.content ? `${last.content}\n\n${error}` : error, error: true }));
       try {
@@ -98,6 +118,7 @@ export function Assistant({ enabled, avatarSrc }: { enabled: boolean; avatarSrc:
         });
         if (!res.ok || !res.body) {
           const data = await res.json().catch(() => null);
+          failed = res.status === 429 ? "angry" : "error";
           fail(data?.error || "L'assistant est indisponible pour le moment.");
           return;
         }
@@ -113,17 +134,28 @@ export function Assistant({ enabled, avatarSrc }: { enabled: boolean; avatarSrc:
           for (const line of lines) {
             if (!line) continue;
             const event = JSON.parse(line) as { t?: string; error?: string };
-            if (event.t) patch((last) => ({ ...last, content: last.content + event.t }));
-            if (event.error) fail(event.error);
+            if (event.t) {
+              if (!answer) setMood("grin");
+              answer += event.t;
+              patch((last) => ({ ...last, content: last.content + event.t }));
+            }
+            if (event.error) {
+              failed = "error";
+              fail(event.error);
+            }
           }
         }
       } catch {
+        failed = "error";
         fail("Connexion interrompue. Vérifiez votre réseau puis réessayez.");
       } finally {
         setBusy(false);
+        if (failed) setMood(failed, 5000);
+        else if (UNSURE.test(answer)) setMood("confused", 4500);
+        else setMood("wink", 2600);
       }
     },
-    [enabled],
+    [enabled, setMood],
   );
 
   useEffect(() => {
@@ -137,6 +169,7 @@ export function Assistant({ enabled, avatarSrc }: { enabled: boolean; avatarSrc:
 
   useEffect(() => {
     if (!open) return;
+    if (enabled && !state.current.busy) setMood("surprised", 900);
     input.current?.focus({ preventScroll: true });
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -146,7 +179,23 @@ export function Assistant({ enabled, avatarSrc }: { enabled: boolean; avatarSrc:
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [open]);
+  }, [open, enabled, setMood]);
+
+  // Au repos, le robot fait un clin d'œil de temps en temps.
+  useEffect(() => {
+    if (!enabled) return;
+    const timer = setInterval(() => {
+      setMoodState((current) => {
+        if (current !== "happy") return current;
+        moodTimer.current = setTimeout(() => setMoodState((m) => (m === "wink" ? "happy" : m)), 900);
+        return "wink";
+      });
+    }, 9000);
+    return () => {
+      clearInterval(timer);
+      clearTimeout(moodTimer.current);
+    };
+  }, [enabled]);
 
   useEffect(() => {
     log.current?.scrollTo({ top: log.current.scrollHeight });
@@ -154,13 +203,17 @@ export function Assistant({ enabled, avatarSrc }: { enabled: boolean; avatarSrc:
 
   if (!open) {
     return (
-      <button ref={fab} className="ai-fab" onClick={() => setOpen(true)} aria-label="Ouvrir l'assistant TADASHI AI">
-        {avatarSrc ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img className="fab-face" src={avatarSrc} alt="" width={30} height={30} />
-        ) : (
-          <span className="orb" />
-        )}
+      <button
+        ref={fab}
+        className="ai-fab"
+        onClick={() => setOpen(true)}
+        onPointerEnter={() => setHover(true)}
+        onPointerLeave={() => setHover(false)}
+        aria-label="Ouvrir l'assistant TADASHI AI"
+      >
+        <span className="fab-bot">
+          <Robot mood={hover && enabled ? "grin" : mood} size={40} title="" />
+        </span>
         <span className="lbl">TADASHI AI</span>
       </button>
     );
@@ -169,17 +222,15 @@ export function Assistant({ enabled, avatarSrc }: { enabled: boolean; avatarSrc:
   return (
     <aside className="ai-panel" role="dialog" aria-label="Assistant TADASHI AI">
       <div className="ai-head">
-        {avatarSrc ? (
-          <span className="avatar">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={avatarSrc} alt="" width={36} height={36} />
-          </span>
-        ) : (
-          <span className="orb">AI</span>
-        )}
+        <span className="ai-bot">
+          <Robot mood={mood} size={52} />
+        </span>
         <div>
           <strong>TADASHI AI</strong>
-          <small>{enabled ? "Répond à partir du CV et des certificats" : "Hors ligne"}</small>
+          <small>
+            <i className={`ai-dot ai-dot-${mood}`} />
+            {MOOD_LABEL[mood]}
+          </small>
         </div>
         <button className="x" onClick={() => setOpen(false)} aria-label="Fermer l'assistant">
           ×
@@ -214,7 +265,7 @@ export function Assistant({ enabled, avatarSrc }: { enabled: boolean; avatarSrc:
             ) : m.content ? (
               <Rich text={m.content} />
             ) : (
-              <span className="dots" role="status" aria-label="TADASHI AI rédige une réponse">
+              <span className="dots" role="status" aria-label="TADASHI AI réfléchit">
                 <i />
                 <i />
                 <i />

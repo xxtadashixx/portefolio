@@ -1,0 +1,21 @@
+# Déploiement Render (Blueprint) : https://render.com/deploy?repo=https://github.com/xxtadashixx/portefolio
+services:
+  - type: web
+    name: rynah-portfolio
+    runtime: node
+    plan: free
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /robots.txt
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: SESSION_SECRET
+        generateValue: true
+      # À renseigner dans le tableau de bord Render :
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: SITE_URL
+        sync: false

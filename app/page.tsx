@@ -9,6 +9,7 @@ import { Particles } from "@/components/Particles";
 import { HeroLive } from "@/components/HeroLive";
 import { Logo } from "@/components/Logo";
 import { Projects } from "@/components/Projects";
+import { LogoRain, type RainLogo } from "@/components/LogoRain";
 import { Terminal } from "@/components/Terminal";
 import { ContactForm } from "@/components/ContactForm";
 import { Assistant } from "@/components/Assistant";
@@ -47,6 +48,13 @@ export default async function Home() {
   const cvHref = p.cvFile ? fileUrl(p.cvFile, true) : null;
   const avatarSrc = p.avatarFile ? fileUrl(p.avatarFile) : null;
   const evidences = [...new Set(skills.flatMap((s) => s.items.map((i) => i.evidence)))] as Evidence[];
+
+  // Un logo par marque (Docker, Grafana… apparaissent plusieurs fois dans la stack).
+  const rainLogos: RainLogo[] = [];
+  for (const item of skills.flatMap((s) => s.items)) {
+    const icon = getIcon(item.icon);
+    if (icon && !rainLogos.some((l) => l.path === icon.path)) rainLogos.push({ name: icon.title, path: icon.path, color: icon.color });
+  }
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -187,6 +195,7 @@ export default async function Home() {
               accent="stack"
               sub="Pas de jauges ni de pourcentages : chaque outil indique simplement d'où vient la compétence."
             />
+            {rainLogos.length > 0 && <LogoRain logos={rainLogos} />}
             <div className="legend" data-reveal>
               {evidences.map((ev) => (
                 <span key={ev}>
@@ -369,7 +378,7 @@ export default async function Home() {
         </div>
       </footer>
 
-      <Assistant enabled={llmConfigured()} avatarSrc={avatarSrc} />
+      <Assistant enabled={llmConfigured()} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
     </>
   );

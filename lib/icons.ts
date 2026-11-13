@@ -13,7 +13,7 @@ const MONOGRAMS: Record<string, string> = {
   azure: "Az",
   windows: "Win",
   kodekloud: "KK",
-  itcilo: "ITC",
+  secnum: "SNA",
 };
 
 const ALIASES: Record<string, string> = {

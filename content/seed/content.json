@@ -529,18 +529,20 @@
   ],
   "certifications": [
     {
-      "id": "itcilo-buildproc",
-      "title": "BUILDPROC MOOC — Cours en ligne ouvert et massif sur la passation de marchés pour le développement agricole et rural",
-      "issuer": "CIF-OIT (ITCILO) · FIDA",
-      "icon": "itcilo",
-      "date": "27 octobre 2026",
-      "kind": "Attestation de MOOC",
-      "credentialId": "198402218",
+      "id": "secnumacademie",
+      "title": "MOOC SecNumacadémie — Attestation de suivi (4 modules)",
+      "issuer": "SecNumacadémie · ANSSI",
+      "icon": "secnum",
+      "date": "14 juin 2025",
+      "kind": "Attestation de suivi",
+      "credentialId": "",
       "skills": [
-        "Passation de marchés",
-        "Développement agricole et rural"
+        "Panorama de la SSI — 82 %",
+        "Sécurité de l'authentification — 86 %",
+        "Sécurité sur Internet — 86 %",
+        "Sécurité du poste de travail et nomadisme — 88 %"
       ],
-      "file": "itcilo-buildproc-mooc.pdf"
+      "file": "secnumacademie-attestation.jpg"
     },
     {
       "id": "kodekloud-k8s",
@@ -655,16 +657,16 @@
       "text": "KodeKloud Course Completion Certificate. This certificate is proudly presented to RAHAINGONANTENAINA Tafitasoa Riana Nandrianina for successfully completing our Kubernetes Challenges. Date: June 09, 2025. ID: 570bd780-ceb3-4d28-8ab8-c976d13f1fe4. Signed: Mumshad Mannambeth, Founder & Trainer, KodeKloud.\nNote : Kubernetes apparaît uniquement dans cette formation ; aucune utilisation en projet ou en entreprise n'est documentée."
     },
     {
-      "id": "doc-buildproc",
-      "title": "Attestation CIF-OIT (ITCILO) / FIDA — BUILDPROC MOOC",
-      "file": "itcilo-buildproc-mooc.pdf",
-      "text": "Attestation délivrée à Tafitasoa Riana Nandrianina RAHAINGONANTENAINA. BUILDPROC MOOC : cours en ligne ouvert et massif (MOOC) sur la passation de marchés pour le développement agricole et rural. Organisé en coopération avec et financé par le Fonds international de développement agricole (FIDA). Signataires : Valentina Maksiutenko, responsable de projet BUILDPROC, DEVINVEST, CIF-OIT ; Enzo de Laurentiis, chef de la passation des marchés et de la gestion financière, FIDA. Numéro : 198402218. Date : 27 octobre 2026.\nNote : cette formation porte sur la passation de marchés, pas sur un sujet technique DevOps."
-    },
-    {
       "id": "doc-depot-deploiement",
       "title": "Dépôt « deploiement_automatiser » — configuration de l'infrastructure de déploiement",
       "file": "",
       "text": "Synthèse du dépôt GitLab du projet de déploiement automatisé (fichiers d'infrastructure rédigés par Rynah).\nPipeline parent .gitlab-ci.yml, quatre étapes exécutées sur la branche principale : provision, build, scan, deploy.\nProvision : image hashicorp/terraform, terraform init / plan / apply sur AWS avec authentification HCP Terraform (app.terraform.io) ; l'adresse IP publique de l'instance EC2 est écrite dans un artefact dotenv et transmise aux jobs suivants.\nBuild : pipeline enfant qui construit les images frontend et backend de l'application e-commerce avec Podman, puis les pousse sur Docker Hub (images versionnées).\nScan : Trivy analyse les vulnérabilités HIGH et CRITICAL des images applicatives et des images de base (Traefik, MongoDB, Redis).\nDeploy : pipelines enfants pour Traefik, l'application de transport en bus, l'API de billetterie et l'e-commerce ; connexion SSH au serveur, copie des fichiers Docker Compose, docker compose up. Traefik est déployé avant les applications (needs).\nTerraform AWS : VPC 10.0.0.0/16, passerelle Internet, sous-réseau public, table de routage, groupe de sécurité, paire de clés SSH, instance EC2 t2.micro en us-east-1, sortie public_ip.\nTerraform GCP : réseau VPC, sous-réseau, pare-feu (SSH, HTTP, HTTPS), instance Compute Engine e2-micro Ubuntu 22.04 en us-central1.\nTraefik 2.11 : points d'entrée 80 et 443, redirection permanente HTTP vers HTTPS, fournisseur Docker (exposition explicite par labels), certificats Let's Encrypt par challenge HTTP. Script de préparation du serveur : installation de Docker et Docker Compose, création des réseaux Docker.\nMonitoring (Docker Compose) : Prometheus, Grafana, Alertmanager, Node Exporter, cAdvisor, Blackbox Exporter. Règles d'alerte système (CPU, mémoire, disque, réseau), conteneurs (arrêt, boucle de redémarrage, CPU, disque) et applications (erreurs HTTP 4xx/5xx, temps de réponse, service ou base de données indisponible, certificat SSL bientôt expiré). Alertmanager envoie les alertes par email (SMTP), avec modèles de message, routage par sévérité et règles d'inhibition.\nAnsible : playbook et rôle « backup » qui installe rsync sur le serveur puis synchronise son contenu vers une machine de sauvegarde (mode pull), en excluant .git, journaux, fichiers temporaires et node_modules.\nApplications déployées : une boutique e-commerce MERN (React/Vite, Node.js, MongoDB, Redis), une API de billetterie et une application de transport en bus. Rynah n'a pas développé ces applications ; son travail porte sur l'infrastructure, les pipelines, la conteneurisation, la sécurité et le déploiement."
+    },
+    {
+      "id": "doc-secnum",
+      "title": "Attestation de suivi SecNumacadémie (ANSSI) — MOOC de sécurité du numérique",
+      "file": "secnumacademie-attestation.jpg",
+      "text": "SecNumacadémie (ANSSI). Attestation de suivi. L'équipe SecNumacadémie atteste que Tafitasoa Riana Nandrianina RAHAINGONANTENAINA a suivi avec succès les cours des quatre modules de MOOC et obtenu les scores suivants aux évaluations : Panorama de la SSI, évaluation du 14/06/2025, score 82,0 % ; Sécurité de l'authentification, 14/06/2025, 86,0 % ; Sécurité sur Internet, 14/06/2025, 86,0 % ; Sécurité du poste de travail et nomadisme, 14/06/2025, 88,0 %. Fait le 14 juin 2025, l'équipe SecNumacadémie. Site : www.secnumacademie.gouv.fr.\nNote : il s'agit d'une attestation de suivi d'un MOOC de sensibilisation à la sécurité des systèmes d'information, pas d'une certification professionnelle."
     }
   ],
   "notes": [
@@ -676,7 +678,7 @@
     {
       "id": "note-niveaux",
       "title": "Comment lire les compétences",
-      "text": "Compétences pratiquées dans le projet de déploiement (stage HaiRun Technology, juin-septembre 2025) : GitLab CI avec pipelines parent/child, Terraform et HCP Terraform, AWS (EC2, VPC), Google Cloud (Compute Engine, VPC), Docker, Docker Compose, Docker Hub, Podman, Trivy, Traefik et SSL/TLS (Let's Encrypt), Prometheus, Grafana, Alertmanager, Ansible et Crontab, Linux.\nCompétences pratiquées en projet académique : Windows Server, Active Directory, GPO.\nCompétences déclarées par Rynah sans projet documenté à ce jour : Loki, Promtail, GitHub Actions, Azure.\nConnaissances issues de formations uniquement : AWS ECS (KodeKloud), Kubernetes (KodeKloud), fondamentaux réseau et cybersécurité (Cisco Networking Academy), paysage des menaces (Fortinet)."
+      "text": "Compétences pratiquées dans le projet de déploiement (stage HaiRun Technology, juin-septembre 2025) : GitLab CI avec pipelines parent/child, Terraform et HCP Terraform, AWS (EC2, VPC), Google Cloud (Compute Engine, VPC), Docker, Docker Compose, Docker Hub, Podman, Trivy, Traefik et SSL/TLS (Let's Encrypt), Prometheus, Grafana, Alertmanager, Ansible et Crontab, Linux.\nCompétences pratiquées en projet académique : Windows Server, Active Directory, GPO.\nCompétences déclarées par Rynah sans projet documenté à ce jour : Loki, Promtail, GitHub Actions, Azure.\nConnaissances issues de formations uniquement : AWS ECS (KodeKloud), Kubernetes (KodeKloud), fondamentaux réseau et cybersécurité (Cisco Networking Academy), paysage des menaces (Fortinet), sécurité du numérique (MOOC SecNumacadémie de l'ANSSI)."
     },
     {
       "id": "note-role",

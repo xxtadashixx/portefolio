@@ -6,7 +6,8 @@ import type { Content, ContactMessage } from "./types.ts";
 import { validateContent } from "./validate.ts";
 
 const SEED_DIR = path.join(process.cwd(), "content", "seed");
-export const DATA_DIR = path.resolve(/* turbopackIgnore: true */ process.env.DATA_DIR || "./data");
+// Sur Vercel, seul /tmp est inscriptible (et il est vidé entre deux exécutions).
+export const DATA_DIR = path.resolve(/* turbopackIgnore: true */ process.env.DATA_DIR || (process.env.VERCEL ? "/tmp/portfolio-data" : "./data"));
 const UPLOAD_DIR = path.join(DATA_DIR, "uploads");
 const CONTENT_FILE = path.join(DATA_DIR, "content.json");
 const MESSAGES_FILE = path.join(DATA_DIR, "messages.json");
