@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { UI, type Lang } from "@/lib/i18n";
 
 export interface RainLogo {
   name: string;
@@ -30,10 +31,14 @@ const spawn = (logo: RainLogo, fresh = false): Drop => ({
   popped: false,
 });
 
-/** Pluie de logos de la stack : chaque logo se laisse attraper d'un clic. */
-export function LogoRain({ logos }: { logos: RainLogo[] }) {
+/**
+ * Pluie de logos de la stack. Un clic fait éclater le logo, puis amène à la
+ * carte de la technologie correspondante, mise en évidence quelques instants.
+ */
+export function LogoRain({ logos, lang }: { logos: RainLogo[]; lang: Lang }) {
+  const t = UI[lang];
   const [drops, setDrops] = useState<Drop[]>([]);
-  const [caught, setCaught] = useState<string[]>([]);
+  const [seen, setSeen] = useState<string[]>([]);
   const [last, setLast] = useState("");
   const box = useRef<HTMLDivElement>(null);
 
@@ -47,42 +52,55 @@ export function LogoRain({ logos }: { logos: RainLogo[] }) {
     return () => observer.disconnect();
   }, [logos]);
 
+  const goTo = (name: string) => {
+    const cards = [...document.querySelectorAll<HTMLElement>(".tech")].filter((el) => el.dataset.brand === name);
+    if (!cards.length) return;
+    const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    cards[0].scrollIntoView({ behavior: still ? "auto" : "smooth", block: "center" });
+    for (const card of cards) {
+      card.classList.remove("flash");
+      // Relecture forcée du style : relance l'animation si la carte est déjà surlignée.
+      void card.offsetWidth;
+      card.classList.add("flash");
+      setTimeout(() => card.classList.remove("flash"), 2600);
+    }
+  };
+
   const pop = (drop: Drop) => {
     if (drop.popped) return;
     setDrops((all) => all.map((d) => (d.key === drop.key ? { ...d, popped: true } : d)));
-    setCaught((names) => (names.includes(drop.logo.name) ? names : [...names, drop.logo.name]));
+    setSeen((names) => (names.includes(drop.logo.name) ? names : [...names, drop.logo.name]));
     setLast(drop.logo.name);
+    setTimeout(() => goTo(drop.logo.name), 320);
     setTimeout(() => setDrops((all) => all.map((d) => (d.key === drop.key ? spawn(drop.logo, true) : d))), 650);
   };
 
-  const complete = caught.length === logos.length && logos.length > 0;
+  const complete = seen.length === logos.length && logos.length > 0;
 
   return (
     <div className="rain card" ref={box} data-reveal>
       <p className="rain-hud" aria-live="polite">
-        <span>{complete ? "✓ stack complète, bien joué" : "attrapez les logos"}</span>
+        <span>{complete ? t.rainDone : t.rainHint}</span>
         <b>
-          {String(caught.length).padStart(2, "0")}/{String(logos.length).padStart(2, "0")}
+          {String(seen.length).padStart(2, "0")}/{String(logos.length).padStart(2, "0")}
         </b>
-        {last && !complete && <em key={last}>+ {last}</em>}
+        {last && !complete && <em key={last}>→ {last}</em>}
       </p>
       {drops.map((d) => (
         <button
           key={d.key}
           type="button"
-          className={`drop${d.popped ? " pop" : ""}${caught.includes(d.logo.name) ? " seen" : ""}`}
-          style={
-            {
-              left: `${d.left}%`,
-              width: d.size,
-              height: d.size,
-              color: d.logo.color,
-              animationDuration: `${d.duration}s`,
-              animationDelay: `${d.delay}s`,
-            } as React.CSSProperties
-          }
+          className={`drop${d.popped ? " pop" : ""}${seen.includes(d.logo.name) ? " seen" : ""}`}
+          style={{
+            left: `${d.left}%`,
+            width: d.size,
+            height: d.size,
+            color: d.logo.color,
+            animationDuration: `${d.duration}s`,
+            animationDelay: `${d.delay}s`,
+          }}
           onClick={() => pop(d)}
-          aria-label={`Attraper ${d.logo.name}`}
+          aria-label={t.rainGo(d.logo.name)}
           title={d.logo.name}
         >
           <span>

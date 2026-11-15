@@ -69,6 +69,8 @@ export function validateContent(input: unknown): Content {
     otherSkills: list(c.otherSkills),
     projects: arr(c.projects).map((x, n) => ({
       id: slug(x.id, `projet-${n + 1}`),
+      parentId: str(x.parentId, 80),
+      tab: str(x.tab, 40),
       name: str(x.name, 200),
       category: str(x.category, 200),
       period: str(x.period, 100),

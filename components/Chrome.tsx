@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Avatar } from "./Avatar";
+import { UI, homePath, type Lang } from "@/lib/i18n";
 
 export const STAGES = [
   { id: "about", label: "about" },
@@ -16,7 +17,8 @@ export const STAGES = [
  * Habillage du site : navigation, rail « pipeline » qui suit le défilement,
  * barre d'état, et déclenchement des apparitions au scroll.
  */
-export function Chrome({ cvHref, name, avatarSrc }: { cvHref: string | null; name: string; avatarSrc: string | null }) {
+export function Chrome({ cvHref, name, avatarSrc, lang }: { cvHref: string | null; name: string; avatarSrc: string | null; lang: Lang }) {
+  const t = UI[lang];
   const [active, setActive] = useState(-1);
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -74,7 +76,7 @@ export function Chrome({ cvHref, name, avatarSrc }: { cvHref: string | null; nam
     <>
       <header className={`nav${scrolled || open ? " scrolled" : ""}`}>
         <div className="wrap nav-in">
-          <a href="#top" className="brand" aria-label={`${name} — accueil`}>
+          <a href="#top" className="brand" aria-label={`${name} — ${t.home}`}>
             {avatarSrc ? <Avatar src={avatarSrc} name={name} /> : <span className="brand-mark">&gt;_</span>}
             <span className="brand-name">{name}</span>
           </a>
@@ -82,14 +84,14 @@ export function Chrome({ cvHref, name, avatarSrc }: { cvHref: string | null; nam
             className="nav-toggle"
             aria-expanded={open}
             aria-controls="nav-links"
-            aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
+            aria-label={open ? t.menuClose : t.menuOpen}
             onClick={() => setOpen((o) => !o)}
           >
             <span />
             <span />
             <span />
           </button>
-          <nav id="nav-links" className={`nav-links${open ? " open" : ""}`} aria-label="Navigation principale">
+          <nav id="nav-links" className={`nav-links${open ? " open" : ""}`} aria-label={t.navLabel}>
             {STAGES.map((s, i) => (
               <a key={s.id} href={`#${s.id}`} aria-current={active === i ? "true" : undefined} onClick={() => setOpen(false)}>
                 {s.label}
@@ -100,11 +102,14 @@ export function Chrome({ cvHref, name, avatarSrc }: { cvHref: string | null; nam
                 cv.pdf ↓
               </a>
             )}
+            <a className="lang" href={homePath(lang === "fr" ? "en" : "fr")} hrefLang={lang === "fr" ? "en" : "fr"} aria-label={t.switchLabel}>
+              {t.switchTo}
+            </a>
           </nav>
         </div>
       </header>
 
-      <nav className="rail" aria-label="Progression dans la page">
+      <nav className="rail" aria-label={t.railLabel}>
         <p className="rail-title">pipeline</p>
         <ol>
           {STAGES.map((s, i) => (
@@ -119,17 +124,20 @@ export function Chrome({ cvHref, name, avatarSrc }: { cvHref: string | null; nam
         <div>
           <span className="seg-accent">⎇ main</span>
           {active < 0 ? (
-            <span>○ pipeline : en attente</span>
+            <span>{t.statusPending}</span>
           ) : done ? (
-            <span className="ok">✓ pipeline : passed</span>
+            <span className="ok">{t.statusPassed}</span>
           ) : (
-            <span className="run">● stage : {STAGES[active].label}</span>
+            <span className="run">
+              {t.statusStage} {STAGES[active].label}
+            </span>
           )}
           <span>
             {Math.max(0, active + 1)}/{STAGES.length} stages
           </span>
         </div>
         <div>
+          <span>{lang.toUpperCase()}</span>
           <span>UTF-8</span>
           <span>LF</span>
           <span>rynah@cloud</span>

@@ -4,15 +4,16 @@ import path from "node:path";
 import crypto from "node:crypto";
 import type { Content, ContactMessage } from "./types.ts";
 import { validateContent } from "./validate.ts";
+import type { Lang } from "./i18n.ts";
 
 const SEED_DIR = path.join(process.cwd(), "content", "seed");
 // Sur Vercel, seul /tmp est inscriptible (et il est vidé entre deux exécutions).
 export const DATA_DIR = path.resolve(/* turbopackIgnore: true */ process.env.DATA_DIR || (process.env.VERCEL ? "/tmp/portfolio-data" : "./data"));
 const UPLOAD_DIR = path.join(DATA_DIR, "uploads");
-const CONTENT_FILE = path.join(DATA_DIR, "content.json");
 const MESSAGES_FILE = path.join(DATA_DIR, "messages.json");
 
-let cache: { mtimeMs: number; file: string; content: Content } | null = null;
+const contentName = (lang: Lang) => (lang === "en" ? "content.en.json" : "content.json");
+const cache = new Map<Lang, { mtimeMs: number; file: string; content: Content }>();
 
 async function stat(file: string) {
   try {
@@ -24,16 +25,23 @@ async function stat(file: string) {
 
 /** Version courante du contenu : sert de clé de cache à l'index RAG. */
 export function contentVersion(): string {
-  return cache ? `${cache.file}:${cache.mtimeMs}` : "none";
+  const c = cache.get("fr");
+  return c ? `${c.file}:${c.mtimeMs}` : "none";
 }
 
-export async function getContent(): Promise<Content> {
-  const live = await stat(CONTENT_FILE);
-  const file = live ? CONTENT_FILE : path.join(SEED_DIR, "content.json");
+/**
+ * Contenu du site dans une langue. Le français fait référence : c'est lui qui
+ * alimente l'assistant. L'anglais est une traduction d'affichage, stockée à part.
+ */
+export async function getContent(lang: Lang = "fr"): Promise<Content> {
+  const liveFile = path.join(DATA_DIR, contentName(lang));
+  const live = await stat(liveFile);
+  const file = live ? liveFile : path.join(SEED_DIR, contentName(lang));
   const st = live ?? (await fs.stat(file));
-  if (cache && cache.file === file && cache.mtimeMs === st.mtimeMs) return cache.content;
+  const hit = cache.get(lang);
+  if (hit && hit.file === file && hit.mtimeMs === st.mtimeMs) return hit.content;
   const content = validateContent(JSON.parse(await fs.readFile(file, "utf8")));
-  cache = { mtimeMs: st.mtimeMs, file, content };
+  cache.set(lang, { mtimeMs: st.mtimeMs, file, content });
   return content;
 }
 
@@ -44,10 +52,10 @@ async function writeAtomic(file: string, data: string) {
   await fs.rename(tmp, file);
 }
 
-export async function saveContent(input: unknown): Promise<Content> {
+export async function saveContent(input: unknown, lang: Lang = "fr"): Promise<Content> {
   const content = validateContent(input);
-  await writeAtomic(CONTENT_FILE, JSON.stringify(content, null, 2));
-  cache = null;
+  await writeAtomic(path.join(DATA_DIR, contentName(lang)), JSON.stringify(content, null, 2));
+  cache.delete(lang);
   return content;
 }
 

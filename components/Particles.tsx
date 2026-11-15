@@ -24,7 +24,7 @@ export function Particles() {
       canvas.width = w * dpr;
       canvas.height = h * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      const count = Math.min(70, Math.round((w * h) / 22000));
+      const count = Math.min(34, Math.round((w * h) / 42000));
       points = Array.from({ length: count }, () => ({
         x: Math.random() * w,
         y: Math.random() * h,
@@ -46,7 +46,7 @@ export function Particles() {
           const q = points[j];
           const d = Math.hypot(p.x - q.x, p.y - q.y);
           if (d < max) {
-            ctx.strokeStyle = `rgba(79,140,255,${0.22 * (1 - d / max)})`;
+            ctx.strokeStyle = `rgba(79,140,255,${0.14 * (1 - d / max)})`;
             ctx.lineWidth = 1;
             ctx.beginPath();
             ctx.moveTo(p.x, p.y);

@@ -2,7 +2,9 @@
 
 import { useCallback, useEffect, useState } from "react";
 import type { ContactMessage, Content } from "@/lib/types";
-import { EVIDENCE_LABEL } from "@/lib/types";
+import { UI, type Lang } from "@/lib/i18n";
+
+const EVIDENCE_LABEL = UI.fr.evidence;
 
 /* ---------------------------------------------------------------------------
    Éditeur générique : il parcourt le contenu et affiche le bon champ selon la
@@ -55,6 +57,8 @@ const LABELS: Record<string, string> = {
   file: "Fichier original",
   text: "Texte utilisé par l'assistant",
   id: "Identifiant technique",
+  parentId: "Volet du projet (identifiant du projet parent, vide si autonome)",
+  tab: "Libellé de l'onglet",
 };
 const LONG = new Set(["summary", "description", "application", "text", "intro", "detail"]);
 const FILE_KEYS = new Set(["file", "cvFile", "avatarFile"]);
@@ -64,7 +68,7 @@ const TEMPLATES: Record<string, object> = {
   experience: { role: "", company: "", period: "", summary: "", bullets: [] },
   skills: { category: "", items: [] },
   items: { name: "", icon: "", description: "", evidence: "declared" },
-  projects: { id: "", name: "", category: "", period: "", description: "", application: "", contribution: [], stack: [], pipeline: [], architecture: [], screenshots: [], github: "", featured: false, missing: [] },
+  projects: { id: "", parentId: "", tab: "", name: "", category: "", period: "", description: "", application: "", contribution: [], stack: [], pipeline: [], architecture: [], screenshots: [], github: "", featured: false, missing: [] },
   certifications: { id: "", title: "", issuer: "", icon: "", date: "", kind: "", credentialId: "", skills: [], file: "" },
   documents: { id: "", title: "", file: "", text: "" },
   notes: { id: "", title: "", text: "" },
@@ -303,15 +307,17 @@ export function Admin() {
   const [content, setContent] = useState<Content | null>(null);
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [tab, setTab] = useState("profil");
+  const [lang, setLang] = useState<Lang>("fr");
   const [dirty, setDirty] = useState(false);
   const [status, setStatus] = useState("");
   const [loginError, setLoginError] = useState("");
 
-  const load = useCallback(async () => {
+  const load = useCallback(async (which: Lang = "fr") => {
     const state = await (await fetch("/api/admin/login")).json();
     setAuth(state);
     if (state.authenticated) {
-      setContent(await (await fetch("/api/admin/content")).json());
+      setLang(which);
+      setContent(await (await fetch(`/api/admin/content?lang=${which}`)).json());
       setMessages(await (await fetch("/api/admin/messages")).json());
     }
   }, []);
@@ -350,7 +356,7 @@ export function Admin() {
             e.preventDefault();
             const password = new FormData(e.currentTarget).get("password");
             const res = await fetch("/api/admin/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password }) });
-            if (res.ok) void load();
+            if (res.ok) void load("fr");
             else setLoginError((await res.json()).error);
           }}
         >
@@ -371,7 +377,7 @@ export function Admin() {
 
   const save = async () => {
     setStatus("Enregistrement…");
-    const res = await fetch("/api/admin/content", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(content) });
+    const res = await fetch(`/api/admin/content?lang=${lang}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(content) });
     const data = await res.json();
     if (res.ok) {
       setContent(data);
@@ -395,7 +401,7 @@ export function Admin() {
             onClick={async () => {
               await fetch("/api/admin/logout", { method: "POST" });
               setContent(null);
-              void load();
+              void load("fr");
             }}
           >
             Déconnexion
@@ -403,6 +409,31 @@ export function Admin() {
         </div>
       </div>
       {!auth.llm && <p className="todo" style={{ marginBottom: 18 }}>Assistant IA inactif : ANTHROPIC_API_KEY n&apos;est pas définie sur le serveur.</p>}
+
+      <div className="adm-lang">
+        <span>Contenu édité :</span>
+        {(["fr", "en"] as Lang[]).map((l) => (
+          <button
+            key={l}
+            className="mini"
+            aria-pressed={lang === l}
+            onClick={() => {
+              if (l !== lang && (!dirty || confirm("Abandonner les modifications non enregistrées ?"))) {
+                setDirty(false);
+                setStatus("");
+                void load(l);
+              }
+            }}
+          >
+            {l === "fr" ? "Français" : "English"}
+          </button>
+        ))}
+        <span className="hint">
+          {lang === "fr"
+            ? "Le français fait référence et alimente l'assistant."
+            : "Traduction affichée sur /en. À tenir à jour après chaque changement du contenu français ; la base de l'assistant reste en français."}
+        </span>
+      </div>
 
       <div className="adm-tabs" role="tablist">
         {TABS.map((t) => (

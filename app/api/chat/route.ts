@@ -9,6 +9,29 @@ const MAX_TURNS = 12;
 const MAX_CHARS = 800;
 const json = (error: string, status: number, headers?: HeadersInit) => Response.json({ error }, { status, headers });
 
+const MESSAGES = {
+  fr: {
+    off: "L'assistant n'est pas encore configuré sur ce serveur.",
+    rate: "Trop de questions en peu de temps. Réessayez dans un instant.",
+    bad: "Requête invalide.",
+    refusal: "Je ne peux pas répondre à cette demande. Posez-moi une question sur le parcours de Rynah.",
+    busy: "L'assistant est très sollicité. Réessayez dans une minute.",
+    config: "L'assistant est mal configuré côté serveur.",
+    down: "Le service d'IA est injoignable pour le moment. Réessayez plus tard.",
+    error: "Une erreur est survenue. Réessayez plus tard.",
+  },
+  en: {
+    off: "The assistant is not configured on this server yet.",
+    rate: "Too many questions in a short time. Try again in a moment.",
+    bad: "Invalid request.",
+    refusal: "I can't answer that request. Ask me about Rynah's background.",
+    busy: "The assistant is very busy. Try again in a minute.",
+    config: "The assistant is misconfigured on the server.",
+    down: "The AI service is unreachable right now. Try again later.",
+    error: "Something went wrong. Try again later.",
+  },
+};
+
 function parseTurns(body: unknown): ChatTurn[] | null {
   const raw = (body as { messages?: unknown })?.messages;
   if (!Array.isArray(raw) || raw.length === 0) return null;
@@ -25,25 +48,27 @@ function parseTurns(body: unknown): ChatTurn[] | null {
 }
 
 export async function POST(req: Request) {
-  if (!llmConfigured()) return json("L'assistant n'est pas encore configuré sur ce serveur.", 503);
+  let body: unknown = null;
+  try {
+    body = await req.json();
+  } catch {
+    /* corps invalide */
+  }
+  const M = MESSAGES[(body as { lang?: unknown })?.lang === "en" ? "en" : "fr"];
+  if (!llmConfigured()) return json(M.off, 503);
 
   const ip = clientIp(req);
   const perMinute = rateLimit(`chat:m:${ip}`, Number(process.env.CHAT_RATE_PER_MINUTE) || 8, 60_000);
   const perDay = rateLimit(`chat:d:${ip}`, Number(process.env.CHAT_RATE_PER_DAY) || 60, 86_400_000);
   const blocked = !perMinute.ok ? perMinute : !perDay.ok ? perDay : null;
   if (blocked) {
-    return json("Trop de questions en peu de temps. Réessayez dans un instant.", 429, {
+    return json(M.rate, 429, {
       "Retry-After": String(blocked.retryAfter),
     });
   }
 
-  let turns: ChatTurn[] | null = null;
-  try {
-    turns = parseTurns(await req.json());
-  } catch {
-    /* corps invalide */
-  }
-  if (!turns) return json("Requête invalide.", 400);
+  const turns = parseTurns(body);
+  if (!turns) return json(M.bad, 400);
 
   const encoder = new TextEncoder();
   const stream = new ReadableStream<Uint8Array>({
@@ -52,22 +77,22 @@ export async function POST(req: Request) {
       try {
         for await (const event of streamAnswer(turns, req.signal)) {
           if (event.type === "text") send({ t: event.text });
-          else send({ error: "Je ne peux pas répondre à cette demande. Posez-moi une question sur le parcours de Rynah." });
+          else send({ error: M.refusal });
         }
         send({ done: true });
       } catch (err) {
         if (err instanceof Anthropic.APIUserAbortError) {
           /* visiteur parti */
         } else if (err instanceof Anthropic.RateLimitError) {
-          send({ error: "L'assistant est très sollicité. Réessayez dans une minute." });
+          send({ error: M.busy });
         } else if (err instanceof Anthropic.AuthenticationError || err instanceof Anthropic.PermissionDeniedError) {
           console.error("[chat] clé API refusée");
-          send({ error: "L'assistant est mal configuré côté serveur." });
+          send({ error: M.config });
         } else if (err instanceof Anthropic.APIConnectionError) {
-          send({ error: "Le service d'IA est injoignable pour le moment. Réessayez plus tard." });
+          send({ error: M.down });
         } else {
           console.error("[chat]", err instanceof Error ? err.message : err);
-          send({ error: "Une erreur est survenue. Réessayez plus tard." });
+          send({ error: M.error });
         }
       } finally {
         controller.close();

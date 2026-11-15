@@ -80,6 +80,20 @@ Au premier lancement, le site lit `content/seed/content.json`. Dès la première
 sauvegarde dans `/admin`, il lit `DATA_DIR/content.json` ; les fichiers importés vont
 dans `DATA_DIR/uploads`.
 
+### Langues
+
+Le site existe en français (`/`) et en anglais (`/en`). Les textes d'interface sont
+dans `lib/i18n.ts`. Le contenu anglais est une traduction séparée
+(`content.en.json`), éditable dans `/admin` avec le sélecteur « Contenu édité » :
+après un changement du contenu français, pensez à reporter la modification en anglais.
+La base documentaire de l'assistant reste en français ; il répond dans la langue de
+la question.
+
+### Projets à onglets
+
+Un projet dont le champ « Volet du projet » contient l'identifiant du projet mis en
+avant s'affiche comme onglet de celui-ci, avec son « Libellé de l'onglet ».
+
 ### Assistant IA
 
 1. **Base de connaissances** — le contenu du site, le texte extrait des documents

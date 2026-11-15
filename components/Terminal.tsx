@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Content } from "@/lib/types";
 import { complete, run, type Line } from "@/lib/commands";
+import { UI, type Lang } from "@/lib/i18n";
 
 type Entry =
   | { id: number; kind: "cmd"; text: string }
@@ -16,9 +17,9 @@ const PROMPT = (
 );
 const QUICK = ["help", "about", "skills", "projects", "certifications", "neofetch", "clear"];
 const seg = (t: string, c?: Line[number]["c"]) => ({ t, c });
-const BANNER: Line[] = [
+const banner = (lang: Lang): Line[] => [
   [seg("rynah-cloud 1.0 LTS", "a"), seg("  (GNU/Linux · bash)", "m")],
-  [seg("Ce terminal est réel : tapez une commande, ou "), seg("help", "k"), seg(" pour la liste.")],
+  [seg(UI[lang].term.banner[0]), seg(UI[lang].term.banner[1], "k"), seg(UI[lang].term.banner[2])],
   [],
 ];
 
@@ -42,8 +43,9 @@ function Segments({ line }: { line: Line }) {
   );
 }
 
-export function Terminal({ content }: { content: Content }) {
-  const [entries, setEntries] = useState<Entry[]>(() => BANNER.map((line) => ({ id: nextId++, kind: "line", line })));
+export function Terminal({ content, lang }: { content: Content; lang: Lang }) {
+  const t = UI[lang].term;
+  const [entries, setEntries] = useState<Entry[]>(() => banner(lang).map((line) => ({ id: nextId++, kind: "line", line })));
   const [value, setValue] = useState("");
   const [busy, setBusy] = useState(false);
   const history = useRef<string[]>([]);
@@ -82,7 +84,7 @@ export function Terminal({ content }: { content: Content }) {
         /* stockage indisponible */
       }
 
-      const result = run(text, content, history.current);
+      const result = run(text, content, history.current, lang);
       if (result.action?.type === "clear") {
         setEntries([]);
         return;
@@ -118,7 +120,7 @@ export function Terminal({ content }: { content: Content }) {
         );
       });
     },
-    [content],
+    [content, lang],
   );
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -169,14 +171,14 @@ export function Terminal({ content }: { content: Content }) {
         <i />
         <i />
         <span>visitor@rynah-cloud: ~</span>
-        <span className="right">bash — interactif</span>
+        <span className="right">{t.title}</span>
       </div>
       <div
         ref={body}
         className="term-body"
         onClick={() => !window.getSelection()?.toString() && input.current?.focus({ preventScroll: true })}
       >
-        <div role="log" aria-live="polite" aria-label="Sortie du terminal">
+        <div role="log" aria-live="polite" aria-label={t.output}>
           {entries.map((entry) =>
             entry.kind === "cmd" ? (
               <p key={entry.id}>
@@ -213,11 +215,11 @@ export function Terminal({ content }: { content: Content }) {
             autoCorrect="off"
             spellCheck={false}
             enterKeyHint="send"
-            aria-label="Saisir une commande. Tapez help pour la liste."
+            aria-label={t.input}
           />
         </div>
       </div>
-      <div className="term-keys" aria-label="Commandes rapides">
+      <div className="term-keys" aria-label={t.quick}>
         {QUICK.map((cmd) => (
           <button key={cmd} type="button" disabled={busy} onClick={() => execute(cmd)}>
             {cmd}

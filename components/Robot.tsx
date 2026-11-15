@@ -9,8 +9,8 @@ type Px = [x: number, y: number, w: number, h: number];
 /** Visages dessinés en blocs sur une grille de 3 px : le côté « pixelisé » du robot. */
 const FACES: Record<Mood, { eyes: Px[]; mouth: Px[]; extra?: Px[] }> = {
   happy: {
-    eyes: [[39, 62, 6, 6], [75, 62, 6, 6]],
-    mouth: [[51, 71, 18, 3], [54, 74, 12, 3]],
+    eyes: [[39, 61, 6, 6], [75, 61, 6, 6]],
+    mouth: [[48, 69, 3, 3], [69, 69, 3, 3], [51, 72, 3, 3], [66, 72, 3, 3], [54, 75, 12, 3]],
   },
   thinking: {
     eyes: [[39, 64, 6, 6], [75, 64, 6, 6]],
@@ -49,25 +49,13 @@ const FACES: Record<Mood, { eyes: Px[]; mouth: Px[]; extra?: Px[] }> = {
   },
 };
 
-export const MOOD_LABEL: Record<Mood, string> = {
-  happy: "en ligne",
-  thinking: "réfléchit…",
-  grin: "répond",
-  surprised: "oh !",
-  sad: "hors ligne",
-  confused: "hmm, pas sûr",
-  wink: "et voilà",
-  angry: "doucement !",
-  error: "erreur",
-};
-
 const rects = (list: Px[]) => list.map(([x, y, w, h], i) => <rect key={i} x={x} y={y} width={w} height={h} />);
 
 /**
  * Mascotte de TADASHI AI. Le casque est tracé au trait, le visage en pixels ;
  * l'humeur change l'expression et le mouvement (voir .robot dans globals.css).
  */
-export function Robot({ mood, size = 44, title }: { mood: Mood; size?: number; title?: string }) {
+export function Robot({ mood, size = 44, label = "TADASHI AI" }: { mood: Mood; size?: number; label?: string }) {
   const id = useId().replace(/:/g, "");
   const face = FACES[mood];
   return (
@@ -76,8 +64,9 @@ export function Robot({ mood, size = 44, title }: { mood: Mood; size?: number; t
       viewBox="0 0 120 112"
       width={size}
       height={(size * 112) / 120}
-      role="img"
-      aria-label={title ?? `TADASHI AI — ${MOOD_LABEL[mood]}`}
+      role={label ? "img" : undefined}
+      aria-label={label || undefined}
+      aria-hidden={label ? undefined : true}
     >
       <defs>
         <linearGradient id={`${id}s`} x1="0" y1="0" x2="0" y2="1">
@@ -135,8 +124,11 @@ export function Robot({ mood, size = 44, title }: { mood: Mood; size?: number; t
 
         {mood === "thinking" && (
           <g className="robot-hand" fill="#0a0f1f" stroke={`url(#${id}s)`} strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M34 108 V94 q0 -9 9 -9 h16 q7 0 7 6 q0 6 -7 6 h-9" />
-            <path d="M45 85 q-1 -8 5 -9" fill="none" />
+            {/* avant-bras, poing sous le menton, index levé vers la bouche */}
+            <path d="M30 112 L42 99" fill="none" />
+            <rect x="52" y="76" width="9" height="16" rx="4.5" />
+            <rect x="38" y="86" width="26" height="15" rx="7.5" />
+            <path d="M46 93.5 h10" fill="none" strokeWidth="2.5" />
           </g>
         )}
       </g>

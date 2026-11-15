@@ -59,3 +59,5 @@ edge = neigh & ~a
 rgba[edge] = (34, 211, 238, 255)
 
 Image.fromarray(rgba, "RGBA").save(out)
+# Version agrandie à pixels nets pour l'image de partage : à copier dans app/og-avatar.png.
+Image.fromarray(rgba, "RGBA").resize((N * 6, N * 6), Image.NEAREST).save(out.replace(".png", "-large.png"))

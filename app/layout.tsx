@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { headers } from "next/headers";
 import "@fontsource-variable/space-grotesk";
 import "@fontsource-variable/jetbrains-mono";
 import "./globals.css";
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
     "Portfolio de Rynah Tadashi, DevOps & Cloud Engineer : automatisation CI/CD, conteneurs Docker, infrastructure cloud, sécurité et monitoring. Terminal interactif et assistant IA.",
   keywords: ["DevOps", "Cloud", "CI/CD", "GitLab CI", "Docker", "Ansible", "Terraform", "Prometheus", "Grafana", "Madagascar", "Rynah Tadashi"],
   authors: [{ name: "Rynah Tadashi" }],
-  alternates: { canonical: "/" },
+  alternates: { canonical: "/", languages: { fr: "/", en: "/en" } },
   openGraph: {
     type: "profile",
     locale: "fr_FR",
@@ -27,9 +28,10 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = { themeColor: "#04060c", width: "device-width", initialScale: 1 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const lang = (await headers()).get("x-lang") === "en" ? "en" : "fr";
   return (
-    <html lang="fr">
+    <html lang={lang}>
       <body>{children}</body>
     </html>
   );

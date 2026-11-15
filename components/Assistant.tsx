@@ -1,21 +1,14 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
-import { Robot, MOOD_LABEL, type Mood } from "./Robot";
+import { Robot, type Mood } from "./Robot";
+import { UI, type Lang } from "@/lib/i18n";
 
 interface Msg {
   role: "user" | "assistant";
   content: string;
   error?: boolean;
 }
-
-const SUGGESTIONS = [
-  "Qui est Rynah Tadashi ?",
-  "Quels outils CI/CD maîtrise-t-il ?",
-  "A-t-il de l'expérience avec AWS ?",
-  "Quelles certifications possède-t-il ?",
-  "Why should I hire him?",
-];
 
 /** Rendu minimal et sûr (aucun HTML injecté) : gras, listes à puces, liens. */
 function inline(text: string, key: string): ReactNode[] {
@@ -74,7 +67,8 @@ function Rich({ text }: { text: string }) {
 /** Réponse où l'assistant signale une information absente : le robot prend l'air perplexe. */
 const UNSURE = /pas disponible|ne figure pas|n'est pas (mentionn|précis|document)|not available|no information|don't have|isn't (mentioned|documented)/i;
 
-export function Assistant({ enabled }: { enabled: boolean }) {
+export function Assistant({ enabled, lang }: { enabled: boolean; lang: Lang }) {
+  const t = UI[lang].ai;
   const [mood, setMoodState] = useState<Mood>(enabled ? "happy" : "sad");
   const [hover, setHover] = useState(false);
   const moodTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -114,12 +108,12 @@ export function Assistant({ enabled }: { enabled: boolean }) {
         const res = await fetch("/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ messages: history }),
+          body: JSON.stringify({ messages: history, lang }),
         });
         if (!res.ok || !res.body) {
           const data = await res.json().catch(() => null);
           failed = res.status === 429 ? "angry" : "error";
-          fail(data?.error || "L'assistant est indisponible pour le moment.");
+          fail(data?.error || t.errDown);
           return;
         }
         const reader = res.body.getReader();
@@ -147,7 +141,7 @@ export function Assistant({ enabled }: { enabled: boolean }) {
         }
       } catch {
         failed = "error";
-        fail("Connexion interrompue. Vérifiez votre réseau puis réessayez.");
+        fail(t.errNetwork);
       } finally {
         setBusy(false);
         if (failed) setMood(failed, 5000);
@@ -155,7 +149,7 @@ export function Assistant({ enabled }: { enabled: boolean }) {
         else setMood("wink", 2600);
       }
     },
-    [enabled, setMood],
+    [enabled, setMood, lang, t],
   );
 
   useEffect(() => {
@@ -197,6 +191,30 @@ export function Assistant({ enabled }: { enabled: boolean }) {
     };
   }, [enabled]);
 
+  // Le regard du robot suit le curseur, par pas de pixels entiers.
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let frame = 0;
+    const onMove = (e: PointerEvent) => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        for (const el of document.querySelectorAll<HTMLElement>(".fab-bot, .ai-bot")) {
+          const r = el.getBoundingClientRect();
+          const dx = e.clientX - (r.left + r.width / 2);
+          const dy = e.clientY - (r.top + r.height / 2);
+          const step = (v: number) => Math.max(-3, Math.min(3, Math.round(v / 140) * 1.5));
+          el.style.setProperty("--ex", `${step(dx)}px`);
+          el.style.setProperty("--ey", `${step(dy)}px`);
+        }
+      });
+    };
+    window.addEventListener("pointermove", onMove, { passive: true });
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("pointermove", onMove);
+    };
+  }, []);
+
   useEffect(() => {
     log.current?.scrollTo({ top: log.current.scrollHeight });
   }, [messages]);
@@ -209,10 +227,10 @@ export function Assistant({ enabled }: { enabled: boolean }) {
         onClick={() => setOpen(true)}
         onPointerEnter={() => setHover(true)}
         onPointerLeave={() => setHover(false)}
-        aria-label="Ouvrir l'assistant TADASHI AI"
+        aria-label={t.open}
       >
         <span className="fab-bot">
-          <Robot mood={hover && enabled ? "grin" : mood} size={40} title="" />
+          <Robot mood={hover && enabled ? "grin" : mood} size={40} label="" />
         </span>
         <span className="lbl">TADASHI AI</span>
       </button>
@@ -220,19 +238,19 @@ export function Assistant({ enabled }: { enabled: boolean }) {
   }
 
   return (
-    <aside className="ai-panel" role="dialog" aria-label="Assistant TADASHI AI">
+    <aside className="ai-panel" role="dialog" aria-label={t.title}>
       <div className="ai-head">
         <span className="ai-bot">
-          <Robot mood={mood} size={52} />
+          <Robot mood={mood} size={52} label={`TADASHI AI — ${t.moods[mood]}`} />
         </span>
         <div>
           <strong>TADASHI AI</strong>
           <small>
             <i className={`ai-dot ai-dot-${mood}`} />
-            {MOOD_LABEL[mood]}
+            {t.moods[mood]}
           </small>
         </div>
-        <button className="x" onClick={() => setOpen(false)} aria-label="Fermer l'assistant">
+        <button className="x" onClick={() => setOpen(false)} aria-label={t.closeLabel}>
           ×
         </button>
       </div>
@@ -240,18 +258,17 @@ export function Assistant({ enabled }: { enabled: boolean }) {
       <div className="ai-log" ref={log} aria-live="polite">
         <div className="msg bot">
           <p>
-            Bonjour 👋 Je suis l&apos;assistant de Rynah. Posez-moi une question sur son parcours, ses compétences, ses projets ou
-            ses certificats — en français ou en anglais.
+            {t.hello}
           </p>
         </div>
         {!enabled && (
           <div className="msg bot err">
-            <p>L&apos;assistant n&apos;est pas encore activé sur ce serveur (clé API non configurée). Le terminal et le formulaire de contact restent disponibles.</p>
+            <p>{t.disabled}</p>
           </div>
         )}
         {enabled && messages.length === 0 && (
           <div className="ai-sugg">
-            {SUGGESTIONS.map((s) => (
+            {t.suggestions.map((s) => (
               <button key={s} onClick={() => send(s)}>
                 {s}
               </button>
@@ -265,7 +282,7 @@ export function Assistant({ enabled }: { enabled: boolean }) {
             ) : m.content ? (
               <Rich text={m.content} />
             ) : (
-              <span className="dots" role="status" aria-label="TADASHI AI réfléchit">
+              <span className="dots" role="status" aria-label={t.thinking}>
                 <i />
                 <i />
                 <i />
@@ -288,15 +305,15 @@ export function Assistant({ enabled }: { enabled: boolean }) {
           value={value}
           onChange={(e) => setValue(e.target.value)}
           maxLength={800}
-          placeholder={enabled ? "Votre question…" : "Assistant indisponible"}
-          aria-label="Votre question"
+          placeholder={enabled ? t.placeholder : t.unavailable}
+          aria-label={t.question}
           disabled={!enabled}
         />
-        <button type="submit" disabled={!enabled || busy || !value.trim()} aria-label="Envoyer">
+        <button type="submit" disabled={!enabled || busy || !value.trim()} aria-label={t.send}>
           ↑
         </button>
       </form>
-      <p className="ai-note">Réponses générées par IA à partir des documents de Rynah. Vérifiez les points importants avec lui.</p>
+      <p className="ai-note">{t.note}</p>
     </aside>
   );
 }

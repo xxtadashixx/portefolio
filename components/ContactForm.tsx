@@ -1,18 +1,20 @@
 "use client";
 
 import { useState } from "react";
+import { UI, type Dict, type Lang } from "@/lib/i18n";
 
 type Errors = Partial<Record<"name" | "email" | "message", string>>;
 
-function validate(data: Record<string, string>): Errors {
+function validate(data: Record<string, string>, f: Dict["form"]): Errors {
   const errors: Errors = {};
-  if (data.name.trim().length < 2) errors.name = "Indiquez votre nom.";
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(data.email.trim())) errors.email = "Adresse email invalide.";
-  if (data.message.trim().length < 10) errors.message = "Votre message doit contenir au moins 10 caractères.";
+  if (data.name.trim().length < 2) errors.name = f.errName;
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(data.email.trim())) errors.email = f.errEmail;
+  if (data.message.trim().length < 10) errors.message = f.errMessage;
   return errors;
 }
 
-export function ContactForm() {
+export function ContactForm({ lang }: { lang: Lang }) {
+  const f = UI[lang].form;
   const [errors, setErrors] = useState<Errors>({});
   const [status, setStatus] = useState<{ kind: "idle" | "sending" | "ok" | "ko"; text?: string }>({ kind: "idle" });
 
@@ -20,7 +22,7 @@ export function ContactForm() {
     e.preventDefault();
     const form = e.currentTarget;
     const data = Object.fromEntries(new FormData(form)) as Record<string, string>;
-    const found = validate(data);
+    const found = validate(data, f);
     setErrors(found);
     const first = Object.keys(found)[0];
     if (first) {
@@ -32,18 +34,19 @@ export function ContactForm() {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ ...data, lang }),
       });
       const body = await res.json().catch(() => ({}));
       if (!res.ok) {
-        setErrors(body.errors ?? {});
-        setStatus({ kind: "ko", text: body.error || "L'envoi a échoué. Réessayez ou écrivez-moi directement par email." });
+        // Les erreurs de champ renvoyées par le serveur sont réaffichées dans la langue de la page.
+        setErrors(Object.fromEntries(Object.keys(body.errors ?? {}).map((k) => [k, k === "name" ? f.errName : k === "email" ? f.errEmail : f.errMessage])));
+        setStatus({ kind: "ko", text: f.failed });
         return;
       }
       form.reset();
-      setStatus({ kind: "ok", text: "Message envoyé. Merci, je vous réponds rapidement." });
+      setStatus({ kind: "ok", text: f.sent });
     } catch {
-      setStatus({ kind: "ko", text: "Connexion impossible. Réessayez ou écrivez-moi directement par email." });
+      setStatus({ kind: "ko", text: f.offline });
     }
   };
 
@@ -64,33 +67,33 @@ export function ContactForm() {
     <form className="card form" onSubmit={onSubmit} noValidate data-reveal>
       <div className="form-row">
         <div className="field">
-          <label htmlFor="c-name">nom</label>
+          <label htmlFor="c-name">{f.name}</label>
           <input {...field("name")} autoComplete="name" maxLength={100} required />
           {error("name")}
         </div>
         <div className="field">
-          <label htmlFor="c-email">email</label>
+          <label htmlFor="c-email">{f.email}</label>
           <input {...field("email")} type="email" autoComplete="email" maxLength={200} required />
           {error("email")}
         </div>
       </div>
       <div className="field">
-        <label htmlFor="c-message">message</label>
+        <label htmlFor="c-message">{f.message}</label>
         <textarea {...field("message")} maxLength={4000} required />
         {error("message")}
       </div>
       <div className="hp" aria-hidden="true">
-        <label htmlFor="c-website">Ne pas remplir</label>
+        <label htmlFor="c-website">{f.honeypot}</label>
         <input id="c-website" name="website" tabIndex={-1} autoComplete="off" />
       </div>
       <div className="form-foot">
         <button className="btn btn-primary" disabled={status.kind === "sending"}>
           {status.kind === "sending" ? (
             <>
-              <span className="spin" /> Envoi…
+              <span className="spin" /> {f.sending}
             </>
           ) : (
-            "Envoyer le message"
+            f.send
           )}
         </button>
         <p className={`form-msg ${status.kind}`} role="status">

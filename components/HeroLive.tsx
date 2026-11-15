@@ -1,67 +1,81 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { UI, type Lang } from "@/lib/i18n";
 
-export interface InfraNode {
+export interface PipelineStage {
   label: string;
+  tool: string;
   path: string;
 }
 
-type Step = { kind: "cmd" | "out"; text: string; stage: number; cls?: string };
+type Line = { kind: "cmd" | "out"; text: string; cls?: string };
 
-/** Séquence jouée dans le terminal du hero ; `stage` = nombre de nœuds allumés dans le schéma. */
-const SCRIPT: Step[] = [
-  { kind: "cmd", text: "git push origin main", stage: 1 },
-  { kind: "out", text: "→ pipeline déclenché · parent/child", stage: 2, cls: "c-m" },
-  { kind: "out", text: "  ✓ provision  ✓ build  ✓ scan  ✓ deploy", stage: 2, cls: "c-ok" },
-  { kind: "cmd", text: "docker compose up -d", stage: 3 },
-  { kind: "out", text: "  ✓ traefik  ✓ app  ✓ prometheus  ✓ grafana", stage: 4, cls: "c-ok" },
-  { kind: "cmd", text: "curl -sI https://app | head -1", stage: 4 },
-  { kind: "out", text: "HTTP/2 200", stage: 5, cls: "c-a" },
-  { kind: "out", text: "# monitoring : toutes les cibles sont UP", stage: 5, cls: "c-m" },
-];
-
-export function HeroLive({ nodes }: { nodes: InfraNode[] }) {
-  const [lines, setLines] = useState<Step[]>([]);
+/**
+ * Terminal du hero : un push déclenche le pipeline, et chaque étape terminée
+ * allume le nœud correspondant du schéma (provision → build → scan → deploy).
+ */
+export function HeroLive({ stages, lang }: { stages: PipelineStage[]; lang: Lang }) {
+  const t = UI[lang];
+  const [lines, setLines] = useState<Line[]>([]);
   const [typing, setTyping] = useState("");
-  const [stage, setStage] = useState(0);
+  /** -1 : rien n'a démarré ; n : n étapes terminées, l'étape n est en cours. */
+  const [done, setDone] = useState(-1);
 
   useEffect(() => {
+    const push: Line = { kind: "cmd", text: "git push origin main" };
+    const triggered: Line = { kind: "out", text: t.heroTriggered, cls: "c-m" };
+    const stageLine = (i: number): Line => ({ kind: "out", text: `  ✓ ${t.heroStages[i]}`, cls: "c-ok" });
+    const curl: Line = { kind: "cmd", text: "curl -sI https://app | head -1" };
+    const ok: Line = { kind: "out", text: "HTTP/2 200", cls: "c-a" };
+
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setLines(SCRIPT);
-      setStage(nodes.length);
+      setLines([push, triggered, ...stages.map((_, i) => stageLine(i)), curl, ok]);
+      setDone(stages.length);
       return;
     }
     let cancelled = false;
     const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+    const type = async (line: Line) => {
+      for (let i = 1; i <= line.text.length; i++) {
+        if (cancelled) return;
+        setTyping(line.text.slice(0, i));
+        await wait(34 + Math.random() * 40);
+      }
+      await wait(280);
+      setTyping("");
+      setLines((prev) => [...prev, line]);
+    };
     (async () => {
       while (!cancelled) {
         setLines([]);
-        setStage(0);
+        setDone(-1);
         await wait(700);
-        for (const step of SCRIPT) {
+        await type(push);
+        if (cancelled) return;
+        await wait(350);
+        setLines((prev) => [...prev, triggered]);
+        setDone(0);
+        for (let i = 0; i < stages.length; i++) {
+          await wait(1100);
           if (cancelled) return;
-          if (step.kind === "cmd") {
-            for (let i = 1; i <= step.text.length; i++) {
-              if (cancelled) return;
-              setTyping(step.text.slice(0, i));
-              await wait(34 + Math.random() * 40);
-            }
-            await wait(280);
-            setTyping("");
-          } else {
-            await wait(420);
-          }
-          setLines((prev) => [...prev, step]);
-          setStage(step.stage);
+          setLines((prev) => [...prev, stageLine(i)]);
+          setDone(i + 1);
         }
-        await wait(6000);
+        await wait(500);
+        await type(curl);
+        if (cancelled) return;
+        await wait(350);
+        setLines((prev) => [...prev, ok]);
+        await wait(6500);
       }
     })();
     return () => {
       cancelled = true;
     };
-  }, [nodes.length]);
+  }, [stages, t]);
+
+  const state = (i: number) => (done > i ? "passed" : done === i ? "running" : "");
 
   return (
     <div>
@@ -88,27 +102,26 @@ export function HeroLive({ nodes }: { nodes: InfraNode[] }) {
         </div>
       </div>
 
-      <div className="card infra" role="img" aria-label={`Chaîne de déploiement : ${nodes.map((n) => n.label).join(", puis ")}`}>
+      <div className="card infra" role="img" aria-label={t.heroAria}>
         <div className="infra-flow">
-          {nodes.map((node, i) => (
-            <div key={node.label} style={{ display: "contents" }}>
-              {i > 0 && <span className={`infra-link${stage > i ? " on" : ""}`} />}
-              <div className={`infra-node${stage > i ? " on" : ""}`}>
+          {stages.map((stage, i) => (
+            <div key={stage.label} style={{ display: "contents" }}>
+              {i > 0 && <span className={`infra-link ${state(i - 1) === "passed" ? "on" : ""}`} />}
+              <div className={`infra-node ${state(i)}`}>
                 <span className="ico">
                   <svg viewBox="0 0 24 24">
-                    <path d={node.path} />
+                    <path d={stage.path} />
                   </svg>
                 </span>
-                {node.label}
+                <b>{stage.label}</b>
+                {stage.tool}
               </div>
             </div>
           ))}
         </div>
         <div className="infra-cap">
-          <span>
-            {stage >= nodes.length ? <b>● déployé et supervisé</b> : stage > 0 ? "● déploiement en cours…" : "○ en attente d'un push"}
-          </span>
-          <span>code → pipeline → conteneurs → HTTPS → métriques</span>
+          <span>{done >= stages.length ? <b>{t.heroDone}</b> : done >= 0 ? t.heroRunning : t.heroIdle}</span>
+          <span>{t.heroCaption}</span>
         </div>
       </div>
     </div>

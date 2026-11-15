@@ -48,6 +48,10 @@ export interface SkillCategory {
 
 export interface Project {
   id: string;
+  /** Identifiant du projet dont celui-ci est un volet (affiché en onglet), ou vide */
+  parentId: string;
+  /** Libellé court de l'onglet */
+  tab: string;
   name: string;
   category: string;
   period: string;
@@ -111,10 +115,3 @@ export interface ContactMessage {
   email: string;
   message: string;
 }
-
-export const EVIDENCE_LABEL: Record<Evidence, string> = {
-  practiced: "Pratiqué en projet",
-  academic: "Projet académique",
-  training: "Formation suivie",
-  declared: "Déclaré",
-};

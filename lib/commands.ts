@@ -1,5 +1,5 @@
 import type { Content } from "./types.ts";
-import { EVIDENCE_LABEL } from "./types.ts";
+import { UI, type Lang } from "./i18n.ts";
 
 /** Moteur du terminal interactif : chaque commande produit des lignes à afficher. */
 
@@ -23,24 +23,106 @@ const m = (t: string): Seg => ({ t, c: "m" });
 const link = (t: string, href: string): Seg => ({ t, href, c: "a" });
 const blank: Line = [];
 
-export const COMMANDS: Record<string, string> = {
-  help: "affiche les commandes disponibles",
-  about: "présente mon profil",
-  skills: "affiche mes compétences techniques",
-  projects: "affiche mes projets",
-  certifications: "affiche mes certificats",
-  experience: "affiche mon expérience",
-  education: "affiche ma formation",
-  contact: "affiche mes coordonnées",
-  resume: "télécharge mon CV",
-  neofetch: "résumé système de mon profil",
-  ask: "pose une question à TADASHI AI — ask <question>",
-  ls: "liste les fichiers du dossier",
-  cat: "affiche un fichier — cat about.md",
-  whoami: "qui êtes-vous ?",
-  history: "historique des commandes",
-  clear: "nettoie le terminal",
+const TEXT = {
+  fr: {
+    commands: {
+      help: "affiche les commandes disponibles",
+      about: "présente mon profil",
+      skills: "affiche mes compétences techniques",
+      projects: "affiche mes projets",
+      certifications: "affiche mes certificats",
+      experience: "affiche mon expérience",
+      education: "affiche ma formation",
+      contact: "affiche mes coordonnées",
+      resume: "télécharge mon CV",
+      neofetch: "résumé système de mon profil",
+      ask: "pose une question à TADASHI AI — ask <question>",
+      ls: "liste les fichiers du dossier",
+      cat: "affiche un fichier — cat about.md",
+      whoami: "qui êtes-vous ?",
+      history: "historique des commandes",
+      clear: "nettoie le terminal",
+    },
+    available: "Commandes disponibles :",
+    tips: "Astuces : Tab pour compléter, ↑ ↓ pour l'historique, Ctrl+L pour nettoyer.",
+    domains: "Domaines  ",
+    languages: "Langues   ",
+    strengths: "Atouts    ",
+    noPercent: "Aucun pourcentage ici : chaque compétence indique seulement d'où elle vient.",
+    role: "Mon rôle sur ces projets : l'infrastructure et le déploiement, pas le code des applications.",
+    todo: "fiche à compléter",
+    more: (n: number) => `… et ${n} autres contributions`,
+    noDate: "date non précisée",
+    original: "ouvrir le document original ↗",
+    certNote: "Ce sont des attestations de formation, pas des certifications professionnelles à examen.",
+    missing: "à compléter",
+    resumeHint: ["Tapez ", " pour télécharger mon CV."],
+    noCv: "CV non disponible pour le moment.",
+    downloading: (f: string) => `Téléchargement de ${f}…`,
+    fallback: "Si rien ne se passe : ",
+    openCv: "ouvrir le CV ↗",
+    packages: (tools: number, certs: number, projects: number) => `${tools} outils · ${certs} certificats · ${projects} projets`,
+    askUsage: " <votre question>",
+    asked: "→ question transmise à TADASHI AI…",
+    catUsage: " <fichier>",
+    notFound: (f: string) => `cat: ${f}: fichier introuvable`,
+    whoami: ["Vous cherchez plutôt à savoir qui je suis ? Tapez ", "."],
+    sudo: "visitor n'est pas dans le fichier sudoers. Cet incident sera signalé. 😉",
+    exit: "Cette session reste ouverte — le portfolio aussi.",
+    unknown: (c: string) => `bash: ${c}: commande introuvable`,
+    helpHint: ["Tapez ", " pour voir les commandes disponibles."],
+  },
+  en: {
+    commands: {
+      help: "list available commands",
+      about: "introduce my profile",
+      skills: "show my technical skills",
+      projects: "show my projects",
+      certifications: "show my certificates",
+      experience: "show my experience",
+      education: "show my education",
+      contact: "show my contact details",
+      resume: "download my résumé",
+      neofetch: "system-style summary of my profile",
+      ask: "ask TADASHI AI a question — ask <question>",
+      ls: "list files in the folder",
+      cat: "print a file — cat about.md",
+      whoami: "who are you?",
+      history: "command history",
+      clear: "clear the terminal",
+    },
+    available: "Available commands:",
+    tips: "Tips: Tab to complete, ↑ ↓ for history, Ctrl+L to clear.",
+    domains: "Domains   ",
+    languages: "Languages ",
+    strengths: "Strengths ",
+    noPercent: "No percentages here: each skill only says where it comes from.",
+    role: "My role on these projects: infrastructure and deployment, not the application code.",
+    todo: "sheet to be completed",
+    more: (n: number) => `… and ${n} more contributions`,
+    noDate: "date not specified",
+    original: "open the original document ↗",
+    certNote: "These are course completion certificates, not exam-based professional certifications.",
+    missing: "to be completed",
+    resumeHint: ["Type ", " to download my résumé."],
+    noCv: "Résumé not available right now.",
+    downloading: (f: string) => `Downloading ${f}…`,
+    fallback: "If nothing happens: ",
+    openCv: "open the résumé ↗",
+    packages: (tools: number, certs: number, projects: number) => `${tools} tools · ${certs} certificates · ${projects} projects`,
+    askUsage: " <your question>",
+    asked: "→ question sent to TADASHI AI…",
+    catUsage: " <file>",
+    notFound: (f: string) => `cat: ${f}: No such file`,
+    whoami: ["Looking for who I am instead? Type ", "."],
+    sudo: "visitor is not in the sudoers file. This incident will be reported. 😉",
+    exit: "This session stays open — so does the portfolio.",
+    unknown: (c: string) => `bash: ${c}: command not found`,
+    helpHint: ["Type ", " to see the available commands."],
+  },
 };
+
+export const COMMANDS: Record<string, string> = TEXT.fr.commands;
 
 const FILES: Record<string, string> = {
   "about.md": "about",
@@ -65,22 +147,23 @@ export function complete(input: string): string[] {
   return [];
 }
 
-export function run(input: string, c: Content, history: string[] = []): Result {
+export function run(input: string, c: Content, history: string[] = [], lang: Lang = "fr"): Result {
   const trimmed = input.trim();
   if (!trimmed) return { lines: [] };
   const [rawCmd, ...args] = trimmed.split(/\s+/);
   const cmd = rawCmd.toLowerCase();
   const p = c.profile;
+  const T = TEXT[lang];
 
   switch (cmd) {
     case "help":
       return {
         lines: [
-          l("Commandes disponibles :"),
+          l(T.available),
           blank,
-          ...Object.entries(COMMANDS).map(([name, desc]) => l("  ", k(name.padEnd(16)), m(desc))),
+          ...Object.entries(T.commands).map(([name, desc]) => l("  ", k(name.padEnd(16)), m(desc))),
           blank,
-          l(m("Astuces : Tab pour compléter, ↑ ↓ pour l'historique, Ctrl+L pour nettoyer.")),
+          l(m(T.tips)),
         ],
       };
 
@@ -92,9 +175,9 @@ export function run(input: string, c: Content, history: string[] = []): Result {
           blank,
           l(p.summary),
           blank,
-          l(k("Domaines  "), p.domains.join(" · ")),
-          l(k("Langues   "), p.languages.join(" · ")),
-          l(k("Atouts    "), p.softSkills.join(" · ")),
+          l(k(T.domains), p.domains.join(" · ")),
+          l(k(T.languages), p.languages.join(" · ")),
+          l(k(T.strengths), p.softSkills.join(" · ")),
         ],
       };
 
@@ -103,28 +186,28 @@ export function run(input: string, c: Content, history: string[] = []): Result {
         lines: [
           ...c.skills.flatMap((cat) => [
             l(a(`▸ ${cat.category}`)),
-            ...cat.items.map((s) => l("    ", s.name.padEnd(26), m(EVIDENCE_LABEL[s.evidence]))),
+            ...cat.items.map((s) => l("    ", s.name.padEnd(26), m(UI[lang].evidence[s.evidence]))),
           ]),
           blank,
-          l(m("Aucun pourcentage ici : chaque compétence indique seulement d'où elle vient.")),
+          l(m(T.noPercent)),
         ],
       };
 
     case "projects":
       return {
         lines: [
-          l(m("Mon rôle sur ces projets : l'infrastructure et le déploiement, pas le code des applications.")),
+          l(m(T.role)),
           blank,
           ...c.projects.flatMap((x, i) => [
-          l(a(`[${String(i + 1).padStart(2, "0")}] ${x.name}`)),
-          l("     ", m(x.category || "—")),
-          x.description ? l("     ", x.description) : l("     ", { t: "fiche à compléter", c: "w" }),
-          ...x.contribution.slice(0, 4).map((t) => l("     ", { t: "+ ", c: "ok" }, t)),
-          x.contribution.length > 4 ? l("     ", m(`… et ${x.contribution.length - 4} autres contributions`)) : blank,
-          x.stack.length ? l("     ", k("stack "), x.stack.join(", ")) : blank,
-          x.github ? l("     ", k("repo  "), link(x.github, x.github)) : blank,
-          blank,
-        ]),
+            l(a(`[${String(i + 1).padStart(2, "0")}] ${x.name}`)),
+            l("     ", m(x.category || "—")),
+            x.description ? l("     ", x.description) : l("     ", { t: T.todo, c: "w" }),
+            ...x.contribution.slice(0, 4).map((t) => l("     ", { t: "+ ", c: "ok" }, t)),
+            x.contribution.length > 4 ? l("     ", m(T.more(x.contribution.length - 4))) : blank,
+            x.stack.length ? l("     ", k("stack "), x.stack.join(", ")) : blank,
+            x.github ? l("     ", k("repo  "), link(x.github, x.github)) : blank,
+            blank,
+          ]),
         ],
       };
 
@@ -134,11 +217,11 @@ export function run(input: string, c: Content, history: string[] = []): Result {
         lines: [
           ...c.certifications.flatMap((x) => [
             l({ t: "✓ ", c: "ok" }, a(x.title)),
-            l("  ", `${x.issuer}`, m(`  ·  ${x.date || "date non précisée"}  ·  ${x.kind}`)),
-            x.file ? l("  ", link("ouvrir le document original ↗", fileUrl(x.file))) : blank,
+            l("  ", `${x.issuer}`, m(`  ·  ${x.date || T.noDate}  ·  ${x.kind}`)),
+            x.file ? l("  ", link(T.original, fileUrl(x.file))) : blank,
             blank,
           ]),
-          l(m("Ce sont des attestations de formation, pas des certifications professionnelles à examen.")),
+          l(m(T.certNote)),
         ],
       };
 
@@ -158,22 +241,19 @@ export function run(input: string, c: Content, history: string[] = []): Result {
     case "contact":
       return {
         lines: [
-          p.email ? l(k("email     "), link(p.email, `mailto:${p.email}`)) : l(k("email     "), m("à compléter")),
-          p.linkedin ? l(k("linkedin  "), link(p.linkedin.replace(/^https?:\/\/(www\.)?/, ""), p.linkedin)) : l(k("linkedin  "), m("à compléter")),
-          p.github ? l(k("github    "), link(p.github.replace(/^https?:\/\//, ""), p.github)) : l(k("github    "), m("à compléter")),
+          p.email ? l(k("email     "), link(p.email, `mailto:${p.email}`)) : l(k("email     "), m(T.missing)),
+          p.linkedin ? l(k("linkedin  "), link(p.linkedin.replace(/^https?:\/\/(www\.)?/, ""), p.linkedin)) : l(k("linkedin  "), m(T.missing)),
+          p.github ? l(k("github    "), link(p.github.replace(/^https?:\/\//, ""), p.github)) : l(k("github    "), m(T.missing)),
           blank,
-          l(m("Tapez "), k("resume"), m(" pour télécharger mon CV.")),
+          l(m(T.resumeHint[0]), k("resume"), m(T.resumeHint[1])),
         ],
       };
 
     case "resume":
     case "cv":
-      if (!p.cvFile) return { lines: [l({ t: "CV non disponible pour le moment.", c: "w" })] };
+      if (!p.cvFile) return { lines: [l({ t: T.noCv, c: "w" })] };
       return {
-        lines: [
-          l({ t: "✓ ", c: "ok" }, `Téléchargement de ${p.cvFile}…`),
-          l(m("Si rien ne se passe : "), link("ouvrir le CV ↗", fileUrl(p.cvFile))),
-        ],
+        lines: [l({ t: "✓ ", c: "ok" }, T.downloading(p.cvFile)), l(m(T.fallback), link(T.openCv, fileUrl(p.cvFile)))],
         action: { type: "download", href: fileUrl(p.cvFile, true) },
       };
 
@@ -193,7 +273,7 @@ export function run(input: string, c: Content, history: string[] = []): Result {
             l(k("Degree    "), c.education[0] ? `${c.education[0].title} (${c.education[0].year})` : "—"),
             l(k("Uptime    "), exp ? `${exp.role} @ ${exp.company}, ${exp.period}` : "—"),
             l(k("Shell     "), "bash · Linux"),
-            l(k("Packages  "), `${c.skills.reduce((n, s) => n + s.items.length, 0)} outils · ${c.certifications.length} certificats · ${c.projects.length} projets`),
+            l(k("Packages  "), T.packages(c.skills.reduce((n, s) => n + s.items.length, 0), c.certifications.length, c.projects.length)),
             l(k("Stack     "), practiced.slice(0, 6).join(", ")),
             l(k("Languages "), p.languages.map((x) => x.split(" — ")[0]).join(", ")),
             blank,
@@ -205,22 +285,22 @@ export function run(input: string, c: Content, history: string[] = []): Result {
 
     case "ask": {
       const question = args.join(" ");
-      if (!question) return { lines: [l("usage : ", k("ask"), " <votre question>")] };
-      return { lines: [l(m("→ question transmise à TADASHI AI…"))], action: { type: "ask", question } };
+      if (!question) return { lines: [l("usage : ", k("ask"), T.askUsage)] };
+      return { lines: [l(m(T.asked))], action: { type: "ask", question } };
     }
 
     case "ls":
       return { lines: [l(...Object.keys(FILES).flatMap((f) => [a(f), "  "]), p.cvFile ? m("cv.pdf") : "")] };
 
     case "cat": {
-      if (!args[0]) return { lines: [l("usage : ", k("cat"), " <fichier>")] };
-      if (args[0] === "cv.pdf") return run("resume", c, history);
+      if (!args[0]) return { lines: [l("usage : ", k("cat"), T.catUsage)] };
+      if (args[0] === "cv.pdf") return run("resume", c, history, lang);
       const target = FILES[args[0]];
-      return target ? run(target, c, history) : { lines: [l({ t: `cat: ${args[0]}: fichier introuvable`, c: "w" })] };
+      return target ? run(target, c, history, lang) : { lines: [l({ t: T.notFound(args[0]), c: "w" })] };
     }
 
     case "whoami":
-      return { lines: [l("visitor"), l(m("Vous cherchez plutôt à savoir qui je suis ? Tapez "), k("about"), m("."))] };
+      return { lines: [l("visitor"), l(m(T.whoami[0]), k("about"), m(T.whoami[1]))] };
 
     case "history":
       return { lines: history.map((h, i) => l(m(String(i + 1).padStart(4) + "  "), h)) };
@@ -229,17 +309,12 @@ export function run(input: string, c: Content, history: string[] = []): Result {
       return { lines: [], action: { type: "clear" } };
 
     case "sudo":
-      return { lines: [l({ t: "visitor n'est pas dans le fichier sudoers. Cet incident sera signalé. 😉", c: "w" })] };
+      return { lines: [l({ t: T.sudo, c: "w" })] };
 
     case "exit":
-      return { lines: [l(m("Cette session reste ouverte — le portfolio aussi."))] };
+      return { lines: [l(m(T.exit))] };
 
     default:
-      return {
-        lines: [
-          l({ t: `bash: ${rawCmd.slice(0, 40)}: commande introuvable`, c: "w" }),
-          l(m("Tapez "), k("help"), m(" pour voir les commandes disponibles.")),
-        ],
-      };
+      return { lines: [l({ t: T.unknown(rawCmd.slice(0, 40)), c: "w" }), l(m(T.helpHint[0]), k("help"), m(T.helpHint[1]))] };
   }
 }
