@@ -9,13 +9,38 @@ import { buildIndex, retrieve, formatContext, type Index } from "./rag.ts";
  */
 
 export const llmConfigured = () => Boolean(process.env.GEMINI_API_KEY);
-const MODEL = () => process.env.LLM_MODEL || "gemini-2.5-flash";
+/**
+ * Modèles à essayer dans l'ordre : si l'un est introuvable ou sans quota, on passe au suivant.
+ * LLM_MODEL accepte une liste séparée par des virgules ; GEMINI_MODEL et GEMINI_MODELS sont
+ * acceptés aussi (même convention que d'autres projets Gemini) et servent de repli.
+ */
+const MODELS = (): string[] => {
+  const list = [process.env.LLM_MODEL, process.env.GEMINI_MODELS, process.env.GEMINI_MODEL]
+    .flatMap((v) => (v ?? "").split(","))
+    .map((m) => m.trim().replace(/^models\//, ""))
+    .filter(Boolean);
+  const unique = [...new Set(list)];
+  return unique.length ? unique : ["gemini-2.5-flash"];
+};
+/** Modèles que Google a déclarés introuvables : inutile de les réessayer à chaque question. */
+const gone = new Set<string>();
 const MAX_TOKENS = () => Math.min(8000, Math.max(300, Number(process.env.LLM_MAX_TOKENS) || 2048));
 const BASE = () => (process.env.GEMINI_API_BASE || "https://generativelanguage.googleapis.com").replace(/\/$/, "");
-/** Les modèles 2.5 Flash raisonnent par défaut : ce raisonnement consommerait le quota gratuit et la limite de longueur. */
-const thinkingOff = (model: string) => /gemini-2\.5-flash/.test(model);
+/**
+ * Les modèles 2.5 Flash raisonnent par défaut : on coupe ce raisonnement, qui consommerait le quota gratuit.
+ * Pour les autres modèles on ne touche pas au réglage (il varie d'une génération à l'autre),
+ * mais on laisse plus de place à la réponse, le raisonnement comptant dans la limite.
+ */
+function generation(model: string, maxTokens: number, temperature: number) {
+  const is25 = /gemini-2\.5-flash/.test(model);
+  return {
+    maxOutputTokens: is25 ? maxTokens : Math.max(maxTokens, 4096),
+    temperature,
+    ...(is25 ? { thinkingConfig: { thinkingBudget: 0 } } : {}),
+  };
+}
 
-export type LlmErrorKind = "rate" | "auth" | "network" | "other";
+export type LlmErrorKind = "rate" | "auth" | "network" | "model" | "other";
 export class LlmError extends Error {
   constructor(
     public kind: LlmErrorKind,
@@ -57,12 +82,14 @@ Réponds dans la langue de la question (français ou anglais), sur un ton profes
 
 const clean = (s: string) => s.replace(/<\/?(documents?|question)[^>]*>/gi, "").trim();
 
-/** Appel REST : traduit les échecs HTTP en LlmError, sans jamais exposer la clé. */
-async function call(method: "streamGenerateContent?alt=sse" | "generateContent", body: unknown, signal?: AbortSignal): Promise<Response> {
+type Method = "streamGenerateContent?alt=sse" | "generateContent";
+
+/** Un appel REST sur un modèle : traduit les échecs HTTP en LlmError, sans jamais exposer la clé. */
+async function once(model: string, method: Method, body: unknown, signal?: AbortSignal): Promise<Response> {
   const timeout = AbortSignal.timeout(60_000);
   let res: Response;
   try {
-    res = await fetch(`${BASE()}/v1beta/models/${encodeURIComponent(MODEL())}:${method}`, {
+    res = await fetch(`${BASE()}/v1beta/models/${encodeURIComponent(model)}:${method}`, {
       method: "POST",
       headers: { "Content-Type": "application/json", "x-goog-api-key": process.env.GEMINI_API_KEY! },
       body: JSON.stringify(body),
@@ -70,20 +97,40 @@ async function call(method: "streamGenerateContent?alt=sse" | "generateContent",
     });
   } catch (e) {
     if (signal?.aborted) throw e;
-    throw new LlmError("network", e instanceof Error ? e.message : "réseau");
+    throw new LlmError("network", `${model} : ${e instanceof Error ? e.message : "réseau"}`);
   }
   if (res.ok) return res;
-  const detail = (await res.text().catch(() => "")).slice(0, 300);
-  console.error("[llm]", res.status, detail);
+  const detail = (await res.text().catch(() => "")).replace(/\s+/g, " ").slice(0, 240);
+  console.error(`[llm] ${model} → HTTP ${res.status} ${detail}`);
   const kind: LlmErrorKind =
     res.status === 429
       ? "rate"
       : res.status === 401 || res.status === 403 || (res.status === 400 && /api key|API_KEY/i.test(detail))
         ? "auth"
-        : res.status >= 500
-          ? "network"
-          : "other";
-  throw new LlmError(kind, `HTTP ${res.status}`, res.status);
+        : res.status === 404
+          ? "model"
+          : res.status >= 500
+            ? "network"
+            : "other";
+  throw new LlmError(kind, `${model} : HTTP ${res.status} ${detail}`, res.status);
+}
+
+/** Essaie les modèles dans l'ordre ; un modèle introuvable, sans quota ou en panne cède la place au suivant. */
+async function call(method: Method, build: (model: string) => unknown, signal?: AbortSignal): Promise<Response> {
+  const all = MODELS();
+  const chain = all.filter((m) => !gone.has(m));
+  const list = chain.length ? chain : all;
+  let last: LlmError | undefined;
+  for (const model of list) {
+    try {
+      return await once(model, method, build(model), signal);
+    } catch (e) {
+      if (!(e instanceof LlmError) || e.kind === "auth" || e.kind === "other") throw e;
+      if (e.kind === "model") gone.add(model);
+      last = e;
+    }
+  }
+  throw last!;
 }
 
 interface GeminiChunk {
@@ -108,15 +155,11 @@ export async function* streamAnswer(history: ChatTurn[], signal?: AbortSignal): 
   ];
   const res = await call(
     "streamGenerateContent?alt=sse",
-    {
+    (model) => ({
       systemInstruction: { parts: [{ text: systemPrompt(content.profile.name, content.profile.legalName) }] },
       contents,
-      generationConfig: {
-        maxOutputTokens: MAX_TOKENS(),
-        temperature: 0.3,
-        ...(thinkingOff(MODEL()) ? { thinkingConfig: { thinkingBudget: 0 } } : {}),
-      },
-    },
+      generationConfig: generation(model, MAX_TOKENS(), 0.3),
+    }),
     signal,
   );
 
@@ -154,7 +197,7 @@ export async function* streamAnswer(history: ChatTurn[], signal?: AbortSignal): 
 
 /** Transcrit fidèlement un certificat ou un CV (PDF scanné ou image) pour la base documentaire. */
 export async function transcribeDocument(data: Buffer, mime: string): Promise<string> {
-  const res = await call("generateContent", {
+  const res = await call("generateContent", (model) => ({
     contents: [
       {
         role: "user",
@@ -166,12 +209,8 @@ export async function transcribeDocument(data: Buffer, mime: string): Promise<st
         ],
       },
     ],
-    generationConfig: {
-      maxOutputTokens: 4000,
-      temperature: 0,
-      ...(thinkingOff(MODEL()) ? { thinkingConfig: { thinkingBudget: 0 } } : {}),
-    },
-  });
+    generationConfig: generation(model, 4000, 0),
+  }));
   const json = (await res.json()) as GeminiChunk;
   const cand = json.candidates?.[0];
   if (json.promptFeedback?.blockReason || (cand?.finishReason && BLOCKED.has(cand.finishReason))) {

@@ -82,18 +82,20 @@ export async function POST(req: Request) {
         }
         send({ done: true });
       } catch (err) {
+        // En local (npm run dev), la cause exacte est ajoutée au message pour faciliter le diagnostic.
+        const why = process.env.NODE_ENV === "production" ? "" : ` [${err instanceof Error ? err.message : String(err)}]`;
         if (req.signal.aborted) {
           /* visiteur parti */
         } else if (err instanceof LlmError && err.kind === "rate") {
-          send({ error: M.busy });
-        } else if (err instanceof LlmError && err.kind === "auth") {
+          send({ error: M.busy + why });
+        } else if (err instanceof LlmError && (err.kind === "auth" || err.kind === "model")) {
           console.error("[chat] clé API refusée");
-          send({ error: M.config });
+          send({ error: M.config + why });
         } else if (err instanceof LlmError && err.kind === "network") {
-          send({ error: M.down });
+          send({ error: M.down + why });
         } else {
           console.error("[chat]", err instanceof Error ? err.message : err);
-          send({ error: M.error });
+          send({ error: M.error + why });
         }
       } finally {
         controller.close();

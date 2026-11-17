@@ -48,7 +48,7 @@ Définissez `CONTACT_WEBHOOK_URL` pour recevoir les messages ailleurs.
 | Variable | Rôle |
 | --- | --- |
 | `GEMINI_API_KEY` | Clé gratuite de l'API Gemini ([Google AI Studio](https://aistudio.google.com/apikey)). Lue uniquement côté serveur. Sans elle, l'assistant s'affiche « hors ligne ». |
-| `LLM_MODEL` | Modèle Gemini utilisé (défaut : `gemini-2.5-flash`). À changer si Google le retire de l'offre gratuite. |
+| `LLM_MODEL` | Modèle(s) Gemini, séparés par des virgules, essayés dans l'ordre : si l'un est introuvable ou sans quota, le suivant prend le relais (défaut : `gemini-2.5-flash`). |
 | `LLM_MAX_TOKENS` | Longueur maximale d'une réponse (défaut : 2048). |
 | `ADMIN_PASSWORD` | Mot de passe de `/admin`. Sans lui, l'administration est désactivée. |
 | `SESSION_SECRET` | Chaîne aléatoire qui signe les sessions (`openssl rand -hex 32`). |
