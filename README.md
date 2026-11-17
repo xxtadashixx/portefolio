@@ -104,6 +104,10 @@ avant s'affiche comme onglet de celui-ci, avec son « Libellé de l'onglet ».
 
 ### Assistant IA
 
+Si l'assistant répond « Une erreur est survenue », lancez `npm run check:llm` : il teste la clé,
+liste les modèles disponibles pour elle et affiche la réponse exacte de Google pour chaque
+modèle configuré (la clé n'est jamais affichée).
+
 1. **Base de connaissances** — le contenu du site, le texte extrait des documents
    importés et les notes libres sont découpés en passages.
 2. **Recherche** — à chaque question, un index BM25 (français / anglais, sans accents,
