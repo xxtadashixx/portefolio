@@ -12,10 +12,13 @@ services:
         value: "22"
       - key: SESSION_SECRET
         generateValue: true
-      # À renseigner dans le tableau de bord Render :
+      # À renseigner à la création (ou dans Environment) :
       - key: GEMINI_API_KEY
         sync: false
       - key: ADMIN_PASSWORD
         sync: false
       - key: SITE_URL
+        sync: false
+      # Mêmes modèles que dans votre .env local (liste séparée par des virgules).
+      - key: LLM_MODEL
         sync: false
