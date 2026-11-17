@@ -39,16 +39,16 @@ Définissez `CONTACT_WEBHOOK_URL` pour recevoir les messages ailleurs.
 
 | Variable | Rôle |
 | --- | --- |
-| `ANTHROPIC_API_KEY` | Clé de l'API LLM. Lue uniquement côté serveur. Sans elle, l'assistant s'affiche « hors ligne ». |
-| `LLM_MODEL` | Modèle utilisé (défaut : `claude-opus-5-5`). |
-| `LLM_EFFORT` | `low` (défaut), `medium` ou `high`. |
-| `LLM_MAX_TOKENS` | Longueur maximale d'une réponse (défaut : 2000). |
+| `GEMINI_API_KEY` | Clé gratuite de l'API Gemini ([Google AI Studio](https://aistudio.google.com/apikey)). Lue uniquement côté serveur. Sans elle, l'assistant s'affiche « hors ligne ». |
+| `LLM_MODEL` | Modèle Gemini utilisé (défaut : `gemini-2.5-flash`). À changer si Google le retire de l'offre gratuite. |
+| `LLM_MAX_TOKENS` | Longueur maximale d'une réponse (défaut : 2048). |
 | `ADMIN_PASSWORD` | Mot de passe de `/admin`. Sans lui, l'administration est désactivée. |
 | `SESSION_SECRET` | Chaîne aléatoire qui signe les sessions (`openssl rand -hex 32`). |
 | `SITE_URL` | URL publique, pour le SEO. |
 | `DATA_DIR` | Dossier des données modifiables (défaut : `./data`). |
 | `CONTACT_WEBHOOK_URL` | Optionnel : reçoit chaque message du formulaire en POST JSON. |
 | `CHAT_RATE_PER_MINUTE`, `CHAT_RATE_PER_DAY` | Limites de l'assistant par adresse IP (défaut : 8 et 60). |
+| `CHAT_RATE_GLOBAL_PER_MINUTE` | Plafond global, tous visiteurs confondus, pour ne pas épuiser le quota gratuit (défaut : 10). |
 
 ## Architecture
 
@@ -104,6 +104,8 @@ avant s'affiche comme onglet de celui-ci, avec son « Libellé de l'onglet ».
    ne rien affirmer qui n'y figure pas, de distinguer ce qui a été pratiqué en
    entreprise, en projet académique, appris en formation ou simplement déclaré, et de
    dire clairement quand une information manque.
+
+L'assistant utilise l'offre gratuite de Gemini : elle est limitée en requêtes par minute et par jour, et Google peut y utiliser les échanges pour améliorer ses produits. Les documents envoyés sont ceux de votre portfolio, mais ne laissez pas d'informations privées dans la base de l'assistant.
 
 Protections : clé API côté serveur uniquement, limite de débit par IP, taille et nombre
 de messages bornés, balises de contexte retirées des messages des visiteurs, consignes

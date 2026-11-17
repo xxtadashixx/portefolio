@@ -48,7 +48,6 @@ const LABELS: Record<string, string> = {
   pipeline: "Pipeline (une étape par ligne : étape | job, job)",
   screenshots: "Captures d'écran (fichiers)",
   featured: "Projet mis en avant",
-  missing: "Informations encore manquantes (affichées « à compléter »)",
   issuer: "Organisme émetteur",
   date: "Date d'obtention",
   kind: "Type de document",
@@ -68,7 +67,7 @@ const TEMPLATES: Record<string, object> = {
   experience: { role: "", company: "", period: "", summary: "", bullets: [] },
   skills: { category: "", items: [] },
   items: { name: "", icon: "", description: "", evidence: "declared" },
-  projects: { id: "", parentId: "", tab: "", name: "", category: "", period: "", description: "", application: "", contribution: [], stack: [], pipeline: [], architecture: [], screenshots: [], github: "", featured: false, missing: [] },
+  projects: { id: "", parentId: "", tab: "", name: "", category: "", period: "", description: "", application: "", contribution: [], stack: [], pipeline: [], architecture: [], screenshots: [], github: "", featured: false },
   certifications: { id: "", title: "", issuer: "", icon: "", date: "", kind: "", credentialId: "", skills: [], file: "" },
   documents: { id: "", title: "", file: "", text: "" },
   notes: { id: "", title: "", text: "" },
@@ -297,7 +296,7 @@ const TABS: { id: string; label: string; keys: (keyof Content)[]; help: string }
   { id: "profil", label: "Profil", keys: ["profile"], help: "Identité, accroche, coordonnées et CV affichés sur le site." },
   { id: "parcours", label: "Parcours", keys: ["experience", "education"], help: "Expériences professionnelles et formation." },
   { id: "stack", label: "Compétences", keys: ["skills", "otherSkills"], help: "Technologies par catégorie. « Origine » précise d'où vient la compétence ; aucun niveau n'est affiché." },
-  { id: "projets", label: "Projets", keys: ["projects"], help: "Fiches projets en deux parties : l'application concernée, puis votre contribution DevOps. Videz « informations manquantes » quand une fiche est complète." },
+  { id: "projets", label: "Projets", keys: ["projects"], help: "Fiches projets en deux parties : l'application concernée, puis votre contribution DevOps. Ajoutez des captures dans « Captures d'écran » pour les afficher." },
   { id: "certifs", label: "Certificats", keys: ["certifications"], help: "N'ajoutez un certificat que si vous disposez du document qui le confirme." },
   { id: "ia", label: "Base de l'assistant", keys: ["documents", "notes"], help: "Documents et notes lus par TADASHI AI, en plus du contenu du site. Importez un PDF ou une image, extrayez son texte, relisez, enregistrez." },
 ];
@@ -408,7 +407,7 @@ export function Admin() {
           </button>
         </div>
       </div>
-      {!auth.llm && <p className="todo" style={{ marginBottom: 18 }}>Assistant IA inactif : ANTHROPIC_API_KEY n&apos;est pas définie sur le serveur.</p>}
+      {!auth.llm && <p className="todo" style={{ marginBottom: 18 }}>Assistant IA inactif : GEMINI_API_KEY n&apos;est pas définie sur le serveur.</p>}
 
       <div className="adm-lang">
         <span>Contenu édité :</span>

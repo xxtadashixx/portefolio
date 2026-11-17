@@ -1,5 +1,4 @@
-import Anthropic from "@anthropic-ai/sdk";
-import { llmConfigured, streamAnswer, type ChatTurn } from "@/lib/llm";
+import { LlmError, llmConfigured, streamAnswer, type ChatTurn } from "@/lib/llm";
 import { clientIp, rateLimit } from "@/lib/ratelimit";
 
 export const runtime = "nodejs";
@@ -60,7 +59,9 @@ export async function POST(req: Request) {
   const ip = clientIp(req);
   const perMinute = rateLimit(`chat:m:${ip}`, Number(process.env.CHAT_RATE_PER_MINUTE) || 8, 60_000);
   const perDay = rateLimit(`chat:d:${ip}`, Number(process.env.CHAT_RATE_PER_DAY) || 60, 86_400_000);
-  const blocked = !perMinute.ok ? perMinute : !perDay.ok ? perDay : null;
+  // Plafond global : protège le quota de l'offre gratuite, quel que soit le nombre de visiteurs.
+  const global = rateLimit("chat:global", Number(process.env.CHAT_RATE_GLOBAL_PER_MINUTE) || 10, 60_000);
+  const blocked = !perMinute.ok ? perMinute : !perDay.ok ? perDay : !global.ok ? global : null;
   if (blocked) {
     return json(M.rate, 429, {
       "Retry-After": String(blocked.retryAfter),
@@ -81,14 +82,14 @@ export async function POST(req: Request) {
         }
         send({ done: true });
       } catch (err) {
-        if (err instanceof Anthropic.APIUserAbortError) {
+        if (req.signal.aborted) {
           /* visiteur parti */
-        } else if (err instanceof Anthropic.RateLimitError) {
+        } else if (err instanceof LlmError && err.kind === "rate") {
           send({ error: M.busy });
-        } else if (err instanceof Anthropic.AuthenticationError || err instanceof Anthropic.PermissionDeniedError) {
+        } else if (err instanceof LlmError && err.kind === "auth") {
           console.error("[chat] clé API refusée");
           send({ error: M.config });
-        } else if (err instanceof Anthropic.APIConnectionError) {
+        } else if (err instanceof LlmError && err.kind === "network") {
           send({ error: M.down });
         } else {
           console.error("[chat]", err instanceof Error ? err.message : err);

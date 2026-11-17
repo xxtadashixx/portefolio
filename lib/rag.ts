@@ -212,7 +212,6 @@ export function buildChunks(c: Content): Chunk[] {
         x.contribution.length && `Contribution DevOps de Rynah : ${x.contribution.join(" ; ")}.`,
         x.pipeline.length && `Pipeline : ${x.pipeline.map((s) => s.replace("|", ":")).join(" → ")}.`,
         x.github && `GitHub : ${x.github}`,
-        x.missing.length && `Informations non disponibles : ${x.missing.join(", ")}.`,
       ]
         .filter(Boolean)
         .join("\n"),

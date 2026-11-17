@@ -298,12 +298,10 @@
         "Containerised applications",
         "Prometheus · Grafana"
       ],
-      "screenshots": [],
-      "github": "",
-      "missing": [
-        "Screenshots",
-        "Repository link"
+      "screenshots": [
+        "dockerhub-repositories.webp"
       ],
+      "github": "",
       "parentId": "",
       "tab": ""
     },
@@ -338,10 +336,6 @@
       "architecture": [],
       "screenshots": [],
       "github": "",
-      "missing": [
-        "Pipeline screenshots",
-        "Repository link"
-      ],
       "parentId": "infra-deploiement",
       "tab": "Pipeline"
     },
@@ -379,12 +373,10 @@
         "Docker Compose",
         "Traefik · HTTPS"
       ],
-      "screenshots": [],
-      "github": "",
-      "missing": [
-        "Screenshots",
-        "Repository link"
+      "screenshots": [
+        "dockerhub-repositories.webp"
       ],
+      "github": "",
       "parentId": "infra-deploiement",
       "tab": "Containers"
     },
@@ -421,10 +413,6 @@
       ],
       "screenshots": [],
       "github": "",
-      "missing": [
-        "Screenshots",
-        "Repository link"
-      ],
       "parentId": "infra-deploiement",
       "tab": "Terraform"
     },
@@ -464,10 +452,6 @@
       ],
       "screenshots": [],
       "github": "",
-      "missing": [
-        "Dashboard screenshots",
-        "Repository link"
-      ],
       "parentId": "infra-deploiement",
       "tab": "Monitoring"
     },
@@ -501,11 +485,6 @@
       ],
       "screenshots": [],
       "github": "",
-      "missing": [
-        "Backup frequency",
-        "Screenshots",
-        "Repository link"
-      ],
       "parentId": "infra-deploiement",
       "tab": "Backups"
     },
@@ -534,9 +513,6 @@
       ],
       "screenshots": [],
       "github": "",
-      "missing": [
-        "Screenshots"
-      ],
       "parentId": "",
       "tab": ""
     }

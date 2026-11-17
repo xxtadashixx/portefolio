@@ -84,7 +84,6 @@ export function validateContent(input: unknown): Content {
       screenshots: list(x.screenshots, 140),
       github: url(x.github),
       featured: x.featured === true,
-      missing: list(x.missing, 200),
     })),
     certifications: arr(c.certifications).map((x, n) => ({
       id: slug(x.id, `certificat-${n + 1}`),

@@ -286,14 +286,10 @@ export async function Home({ lang }: { lang: Lang }) {
                       ))}
                     </ul>
                   )}
-                  {c.file ? (
+                  {c.file && (
                     <a className="btn btn-sm" href={fileUrl(c.file)} target="_blank" rel="noopener noreferrer">
                       {t.viewCert} <span aria-hidden="true">↗</span>
                     </a>
-                  ) : (
-                    <div className="todo">
-                      <b>{t.todo}</b>{t.original}
-                    </div>
                   )}
                 </article>
               ))}

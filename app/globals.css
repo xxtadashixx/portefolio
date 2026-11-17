@@ -1355,9 +1355,6 @@ section {
 .proj:hover .more::after {
   margin-left: 6px;
 }
-.proj.is-todo {
-  border-style: dashed;
-}
 
 dialog.modal {
   width: min(760px, calc(100% - 24px));
@@ -1426,12 +1423,32 @@ dialog.modal[open] {
 }
 .shots {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: 12px;
+}
+.shots a {
+  display: block;
+  overflow: hidden;
+  border-radius: 10px;
+  border: 1px solid var(--line-strong);
+  transition: border-color 0.2s, transform 0.2s;
+}
+.shots a:hover {
+  border-color: var(--cyan);
+  transform: translateY(-2px);
+}
+.shots a:only-child {
+  max-width: 860px;
 }
 .shots img {
-  border-radius: 8px;
-  border: 1px solid var(--line);
+  width: 100%;
+  height: auto;
+}
+.shots figcaption {
+  padding: 8px 12px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--muted);
 }
 @media (max-width: 860px) {
   .proj-featured {
@@ -1527,6 +1544,9 @@ dialog.modal[open] {
   grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
   gap: 14px;
   margin-top: 22px;
+}
+.parts-one {
+  grid-template-columns: 1fr;
 }
 .modal .parts {
   grid-template-columns: 1fr;

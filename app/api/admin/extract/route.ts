@@ -1,8 +1,7 @@
 import { promises as fs } from "node:fs";
-import Anthropic from "@anthropic-ai/sdk";
 import pdfParse from "pdf-parse/lib/pdf-parse.js";
 import { guardAdmin } from "@/lib/auth";
-import { llmConfigured, transcribeDocument } from "@/lib/llm";
+import { LlmError, llmConfigured, transcribeDocument } from "@/lib/llm";
 import { mimeFor, resolveFile } from "@/lib/store";
 
 export const runtime = "nodejs";
@@ -30,14 +29,14 @@ export async function POST(req: Request) {
   }
   if (!llmConfigured()) {
     return Response.json(
-      { error: "Ce fichier ne contient pas de texte extractible. Configurez ANTHROPIC_API_KEY pour le transcrire, ou saisissez le texte à la main." },
+      { error: "Ce fichier ne contient pas de texte extractible. Configurez GEMINI_API_KEY pour le transcrire, ou saisissez le texte à la main." },
       { status: 503 },
     );
   }
   try {
     return Response.json({ text: await transcribeDocument(data, mime), method: "llm" });
   } catch (e) {
-    const message = e instanceof Anthropic.APIError ? `Service d'IA indisponible (${e.status ?? "réseau"}).` : e instanceof Error ? e.message : "Échec de l'extraction.";
+    const message = e instanceof LlmError ? `Service d'IA indisponible (${e.status ?? "réseau"}).` : e instanceof Error ? e.message : "Échec de l'extraction.";
     return Response.json({ error: message }, { status: 502 });
   }
 }

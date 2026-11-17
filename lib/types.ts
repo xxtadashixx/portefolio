@@ -68,7 +68,6 @@ export interface Project {
   screenshots: string[];
   github: string;
   featured: boolean;
-  missing: string[];
 }
 
 export interface Certification {

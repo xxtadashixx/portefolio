@@ -4,16 +4,6 @@ import { useRef, useState } from "react";
 import type { Project } from "@/lib/types";
 import { UI, type Dict, type Lang } from "@/lib/i18n";
 
-function Todo({ items, t }: { items: string[]; t: Dict }) {
-  if (!items.length) return null;
-  return (
-    <div className="todo">
-      <b>{t.todo}</b>
-      {items.join(" · ")}
-    </div>
-  );
-}
-
 /** Pipeline façon GitLab : une colonne par étape, une pastille par job. */
 function PipelineGraph({ stages }: { stages: string[] }) {
   const parsed = stages.map((line) => {
@@ -66,24 +56,26 @@ function Sheet({ project, t }: { project: Project; t: Dict }) {
           <PipelineGraph stages={project.pipeline} />
         </div>
       )}
-      <div className="parts">
-        <div className="part part-app">
-          <p className="part-title">Application / Solution</p>
-          {project.application ? <p>{project.application}</p> : <Todo items={[t.todoApp]} t={t} />}
-        </div>
-        <div className="part part-me">
-          <p className="part-title">My DevOps Contribution</p>
-          {project.contribution.length ? (
-            <ul className="feat">
-              {project.contribution.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          ) : (
-            <Todo items={[t.todoTasks]} t={t} />
+      {(project.application || project.contribution.length > 0) && (
+        <div className={`parts${project.application && project.contribution.length ? "" : " parts-one"}`}>
+          {project.application && (
+            <div className="part part-app">
+              <p className="part-title">Application / Solution</p>
+              <p>{project.application}</p>
+            </div>
+          )}
+          {project.contribution.length > 0 && (
+            <div className="part part-me">
+              <p className="part-title">My DevOps Contribution</p>
+              <ul className="feat">
+                {project.contribution.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </div>
           )}
         </div>
-      </div>
+      )}
       {project.architecture.length > 0 && (
         <div>
           <p className="block-title">{t.architecture}</p>
@@ -120,7 +112,6 @@ function Sheet({ project, t }: { project: Project; t: Dict }) {
           {t.repo} ↗
         </a>
       )}
-      <Todo items={project.missing} t={t} />
     </>
   );
 }
@@ -205,14 +196,14 @@ export function Projects({ projects, lang }: { projects: Project[]; lang: Lang }
         {others.map((p, i) => (
           <button
             key={p.id}
-            className={`card card-hover proj${p.description ? "" : " is-todo"}`}
+            className="card card-hover proj"
             onClick={() => show(p)}
             data-reveal
             style={{ "--i": i % 3 } as React.CSSProperties}
           >
             <span className="proj-kicker">{p.category || t.project}</span>
             <h3>{p.name}</h3>
-            {p.description ? <p>{p.description}</p> : <Todo items={[t.todoSheet]} t={t} />}
+            {p.description && <p>{p.description}</p>}
             <ArchFlow steps={(p.architecture.length ? p.architecture : p.pipeline.map((l) => l.split("|")[0].trim())).slice(0, 4)} compact />
             <span className="proj-count">
               <b>{p.contribution.length}</b> {t.contributions}
