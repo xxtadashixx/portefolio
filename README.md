@@ -22,6 +22,14 @@ Le conteneur écoute sur le port 3000 ; les données modifiables vivent dans le 
 `portfolio-data` (`/data`). Placez-le derrière votre reverse proxy (Traefik, etc.) pour
 le HTTPS.
 
+## Illustration animée
+
+Le visuel du projet de conteneurs est un SVG animé (`scripts/make-illustration.py`).
+`node scripts/render-illustration.js` en tire un WebP animé en boucle de 4 s
+(`docker-anime-anim.webp`) et une image fixe (`docker-anime.webp`), affichée aux
+visiteurs qui demandent moins d'animations. Pour un fichier de votre choix, nommez
+l'animation `nom-anim.webp` et fournissez `nom.webp` comme image fixe.
+
 ## Hébergement
 
 - **Render** : le fichier `render.yaml` décrit le service. Ouvrir

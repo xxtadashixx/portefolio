@@ -299,7 +299,7 @@
         "Prometheus · Grafana"
       ],
       "screenshots": [
-        "docker-anime.webp"
+        "docker-anime-anim.webp"
       ],
       "github": "",
       "parentId": "",
@@ -374,7 +374,7 @@
         "Traefik · HTTPS"
       ],
       "screenshots": [
-        "docker-anime.webp"
+        "docker-anime-anim.webp"
       ],
       "github": "",
       "parentId": "infra-deploiement",

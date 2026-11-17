@@ -100,8 +100,14 @@ function Sheet({ project, t }: { project: Project; t: Dict }) {
           <div className="shots">
             {project.screenshots.map((s) => (
               <a key={s} href={`/api/files/${encodeURIComponent(s)}`} target="_blank" rel="noopener noreferrer">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={`/api/files/${encodeURIComponent(s)}`} alt={t.shotAlt(project.name)} loading="lazy" />
+                <picture>
+                  {/* Convention : « x-anim.webp » est un visuel animé, « x.webp » son image fixe pour qui préfère moins de mouvement. */}
+                  {s.endsWith("-anim.webp") && (
+                    <source media="(prefers-reduced-motion: reduce)" srcSet={`/api/files/${encodeURIComponent(s.replace(/-anim\.webp$/, ".webp"))}`} />
+                  )}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={`/api/files/${encodeURIComponent(s)}`} alt={t.shotAlt(project.name)} loading="lazy" />
+                </picture>
               </a>
             ))}
           </div>
