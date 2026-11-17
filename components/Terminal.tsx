@@ -202,7 +202,9 @@ export function Terminal({ content, lang }: { content: Content; lang: Lang }) {
             ),
           )}
         </div>
-        <div className="term-input" style={busy ? { visibility: "hidden" } : undefined}>
+        {/* Pendant l'affichage d'une réponse la ligne est seulement rendue transparente : avec
+            visibility:hidden, le champ perdrait le focus et il faudrait recliquer à chaque commande. */}
+        <div className="term-input" style={busy ? { opacity: 0 } : undefined}>
           <label htmlFor="term-input">{PROMPT}</label>
           <input
             id="term-input"
@@ -221,7 +223,16 @@ export function Terminal({ content, lang }: { content: Content; lang: Lang }) {
       </div>
       <div className="term-keys" aria-label={t.quick}>
         {QUICK.map((cmd) => (
-          <button key={cmd} type="button" disabled={busy} onClick={() => execute(cmd)}>
+          <button
+            key={cmd}
+            type="button"
+            disabled={busy}
+            onClick={() => {
+              execute(cmd);
+              // Avec une souris ou un clavier, la saisie reprend tout de suite ; au doigt on évite d'ouvrir le clavier.
+              if (window.matchMedia("(pointer: fine)").matches) input.current?.focus({ preventScroll: true });
+            }}
+          >
             {cmd}
           </button>
         ))}
