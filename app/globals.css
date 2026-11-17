@@ -192,13 +192,22 @@ svg {
   inset: 0 0 auto 0;
   z-index: 50;
   height: var(--nav-h);
-  border-bottom: 1px solid transparent;
-  transition: background 0.3s, border-color 0.3s;
 }
-.nav.scrolled {
+/* Le fond flouté est sur un pseudo-élément : un backdrop-filter sur .nav lui-même ferait de lui le
+   repère des enfants en position fixed, et le menu mobile se retrouverait réduit à la hauteur de la barre. */
+.nav::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
   background: rgba(4, 6, 12, 0.78);
   backdrop-filter: blur(14px);
-  border-color: var(--line);
+  border-bottom: 1px solid var(--line);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.nav.scrolled::before {
+  opacity: 1;
 }
 .nav-in {
   height: 100%;
@@ -379,6 +388,12 @@ svg {
   .nav-links a::after {
     content: " →";
     float: right;
+    color: var(--muted);
+  }
+  .nav-links .lang {
+    margin: 0;
+    padding: 14px 16px;
+    border-color: var(--line);
     color: var(--muted);
   }
 }
