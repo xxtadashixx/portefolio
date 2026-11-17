@@ -90,6 +90,8 @@ CSS = f"""
 @keyframes arrive{{0%,70%{{opacity:0;transform:scale(0)}}73%{{opacity:1;transform:scale(1.5)}}86%{{opacity:0;transform:scale(.4)}}100%{{opacity:0;transform:scale(0)}}}}
 .petal{{transform-box:fill-box;transform-origin:center;animation:petal 4s linear infinite}}
 @keyframes petal{{0%{{transform:translate(0,0) rotate(0);opacity:0}}15%{{opacity:.9}}85%{{opacity:.9}}100%{{transform:translate(-34px,230px) rotate(260deg);opacity:0}}}}
+.flag{{transform-origin:676px 48px;animation:flag 2s ease-in-out infinite}}
+@keyframes flag{{0%,100%{{transform:skewY(0) scaleX(1)}}50%{{transform:skewY(-5deg) scaleX(.93)}}}}
 .shoot{{animation:shoot 4s linear infinite}}
 @keyframes shoot{{0%{{transform:translate(0,0);opacity:0}}3%{{opacity:1}}18%{{transform:translate(-150px,52px);opacity:0}}100%{{transform:translate(-150px,52px);opacity:0}}}}
 """
@@ -103,6 +105,7 @@ add('''<defs>
 <linearGradient id="whale" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#69b0ff"/><stop offset="1" stop-color="#3f6fe6"/></linearGradient>
 <linearGradient id="belly" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f0faff"/><stop offset="1" stop-color="#bfe0ff"/></linearGradient>
 <linearGradient id="iris" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7c3aed"/><stop offset="1" stop-color="#22d3ee"/></linearGradient>
+<linearGradient id="iris2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8a5a34"/><stop offset="1" stop-color="#2a160c"/></linearGradient>
 <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3b57c4"/><stop offset="1" stop-color="#0b1550"/></linearGradient>
 <linearGradient id="seaFront" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2d4cb8"/><stop offset="1" stop-color="#091245"/></linearGradient>
 <linearGradient id="trail" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="70" y2="0"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
@@ -193,48 +196,64 @@ def crate(x, y, w, h, color, label, fs=14):
 for (label, color), (x, y) in zip(CRATES, POS):
     crate(x, y, 104, 52, color, label)
 add('<text x="472" y="80" font-size="12" font-weight="700" fill="#e8f1ff" opacity=".9">hub.docker.com/u/rynah</text>')
+add('<line x1="676" y1="92" x2="676" y2="32" stroke="#e8f1ff" stroke-width="3" stroke-linecap="round"/><circle cx="676" cy="31" r="3.5" fill="#fbbf24"/>')
+add('<g class="flag"><path d="M677 36 H775 Q766 48 775 60 H677 Z" fill="#2563eb" stroke="#0a1244" stroke-width="2.5" stroke-linejoin="round"/>')
+add('<text x="723" y="53" text-anchor="middle" font-size="13" font-weight="800" fill="#fff">docker hub</text></g>')
 add('</g>')  # fin .bob baleine
 
-# --- personnage chibi : posé sur un conteneur qui flotte aussi (décalé d'une seconde)
+# --- personnage chibi : Rynah (cheveux bouclés, moustache et bouc, pull noir à col en V)
+SK, SK2, HAIR, HAIR2, KNIT = "#c98d63", "#a8714d", "#14122b", "#3d3b78", "#1c1c2b"
 add('<g class="bob" style="animation-delay:-1s">')
 add('<g class="breathe">')
-add('<path d="M945 336 C945 286 965 262 1000 262 C1035 262 1055 286 1055 336 Z" fill="#6d4aff" stroke="#2c1a8f" stroke-width="3"/>')
-add('<ellipse cx="1000" cy="262" rx="40" ry="14" fill="#5a3de0" stroke="#2c1a8f" stroke-width="3"/>')
-add('<rect x="990" y="240" width="20" height="26" rx="8" fill="#f7cdb4"/>')
-add('<path d="M984 280 v22 M1016 280 v22" stroke="#e9e3ff" stroke-width="3" stroke-linecap="round"/>')
+add(f'<path d="M944 336 C944 286 964 264 1000 264 C1036 264 1056 286 1056 336 Z" fill="{KNIT}" stroke="#07070f" stroke-width="3"/>')
+add(f'<rect x="990" y="238" width="20" height="30" rx="8" fill="{SK2}"/>')
+add(f'<path d="M978 264 L1000 298 L1022 264 Z" fill="{SK}" stroke="#07070f" stroke-width="2.5" stroke-linejoin="round"/>')
+add('<path d="M968 276 C974 266 988 262 1000 268 C1012 262 1026 266 1032 276" stroke="#3a3a52" stroke-width="3" fill="none" stroke-linecap="round"/>')
 add('</g>')
-crate(925, 332, 150, 80, "#22d3ee", "latest", 16)
+crate(925, 332, 150, 80, "#22d3ee", "rynah", 17)
 # ordinateur
 add('<rect x="956" y="280" width="88" height="48" rx="6" fill="#d9dff0" stroke="#5b6894" stroke-width="3"/>')
 add('<rect x="948" y="324" width="104" height="9" rx="4" fill="#aab4cf" stroke="#5b6894" stroke-width="2.5"/>')
 add('<g transform="translate(1000 304)"><circle r="13" fill="#0f1b4d"/><g class="glow"><ellipse cx="-1" cy="1" rx="8" ry="5" fill="#22d3ee"/><path d="M6 1 l6 -4 v8z" fill="#22d3ee"/></g><circle cx="-4" cy="-1" r="1.2" fill="#0f1b4d"/></g>')
 for sx, d in ((940, 0), (1038, -.25)):
-    add(f'<g class="type" style="animation-delay:{d}s"><rect x="{sx}" y="296" width="22" height="36" rx="11" fill="#6d4aff" stroke="#2c1a8f" stroke-width="3"/></g>')
-# tête (elle se balance légèrement)
-add('<g class="breathe"><g class="tilt">')
-add('<ellipse cx="1000" cy="196" rx="55" ry="54" fill="#1d1a46"/>')
-add('<ellipse cx="1000" cy="203" rx="44" ry="42" fill="#ffe3d0" stroke="#d9a58a" stroke-width="2"/>')
-add('<path d="M960 214 q-4 -22 6 -38 q-4 28 14 44 q-16 4 -20 -6Z" fill="#f2c4aa" opacity=".6"/>')
-add('<path d="M950 196 C946 152 972 140 1000 140 C1030 140 1054 152 1050 196 C1042 176 1034 168 1022 166 C1016 182 1004 186 996 170 C988 182 972 184 964 168 C958 178 954 188 950 196 Z" fill="#2c2766" stroke="#14122e" stroke-width="2.5" stroke-linejoin="round"/>')
-add('<path d="M972 150 q12 -8 26 -6 M1004 146 q16 0 28 8" stroke="#5d56b8" stroke-width="3.5" stroke-linecap="round" fill="none"/>')
-add('<path d="M953 206 C948 224 952 240 962 246 C958 232 960 218 962 206 Z M1047 206 C1052 224 1048 240 1038 246 C1042 232 1040 218 1038 206 Z" fill="#2c2766" stroke="#14122e" stroke-width="2"/>')
-for ex in (982, 1018):
-    add(f'<g transform="translate({ex} 208)"><g class="blink" style="animation-delay:-1.6s"><ellipse rx="10" ry="13" fill="#fff"/><ellipse cx="1" cy="1" rx="8" ry="11" fill="url(#iris)"/><ellipse cx="1" cy="2" rx="4" ry="6" fill="#150c3a"/><circle cx="-3" cy="-4" r="3.4" fill="#fff"/><circle cx="4" cy="5" r="1.7" fill="#fff" opacity=".9"/></g><path d="M-11 -4 Q0 -17 11 -4" stroke="#14122e" stroke-width="3.5" fill="none" stroke-linecap="round"/></g>')
-add('<path d="M972 191 L989 188 M1011 188 L1028 191" stroke="#2c2766" stroke-width="3" stroke-linecap="round"/>')
-add('<path d="M994 228 Q1000 238 1006 228 Z" fill="#c0405f" stroke="#7a1f3a" stroke-width="1.6" stroke-linejoin="round"/>')
-add('<ellipse cx="967" cy="222" rx="8" ry="4.5" fill="#ff7aa8" opacity=".55"/><ellipse cx="1033" cy="222" rx="8" ry="4.5" fill="#ff7aa8" opacity=".55"/>')
-add('<path d="M946 198 C944 128 1056 128 1054 198" stroke="#22d3ee" stroke-width="7" fill="none" stroke-linecap="round"/>')
-for hx in (936, 1048):
-    add(f'<rect x="{hx}" y="190" width="16" height="38" rx="8" fill="#22d3ee" stroke="#0e7490" stroke-width="2.5"/><rect class="glow" x="{hx + 4}" y="198" width="8" height="22" rx="4" fill="#a5f3fc" opacity=".7"/>')
-add('</g></g>')
+    add(f'<g class="type" style="animation-delay:{d}s"><rect x="{sx}" y="296" width="22" height="36" rx="11" fill="{KNIT}" stroke="#07070f" stroke-width="3"/></g>')
+# tête
+add('<g transform="translate(0 9)"><g class="breathe"><g class="tilt">')
+BACK = [(953, 190, 15), (957, 169, 18), (974, 152, 20), (1000, 145, 21), (1026, 152, 20), (1043, 169, 18), (1047, 190, 15), (987, 160, 16), (1013, 160, 16)]
+FRONT = [(968, 177, 13), (988, 171, 13), (1009, 170, 13), (1030, 175, 13), (1043, 185, 9), (957, 187, 9)]
+for x, y, r in BACK:
+    add(f'<circle cx="{x}" cy="{y}" r="{r}" fill="{HAIR}" stroke="#07060f" stroke-width="2.5"/>')
+for x, y, r in BACK:
+    add(f'<circle cx="{x}" cy="{y}" r="{r - 1}" fill="{HAIR}"/>')
+add(f'<ellipse cx="957" cy="212" rx="7" ry="9" fill="{SK}" stroke="{SK2}" stroke-width="2"/><ellipse cx="1043" cy="212" rx="7" ry="9" fill="{SK}" stroke="{SK2}" stroke-width="2"/>')
+add(f'<ellipse cx="1000" cy="206" rx="42" ry="41" fill="{SK}" stroke="{SK2}" stroke-width="2"/>')
+add(f'<path d="M960 216 Q962 246 1000 248 Q1038 246 1040 216 Q1032 240 1000 241 Q968 240 960 216Z" fill="{HAIR}" opacity=".3"/>')
+add(f'<path d="M962 200 q-3 18 6 32 q-6 -14 -2 -32Z" fill="{SK2}" opacity=".5"/>')
+for x, y, r in FRONT:
+    add(f'<circle cx="{x}" cy="{y}" r="{r}" fill="{HAIR}" stroke="#07060f" stroke-width="2.5"/>')
+for x, y, r in FRONT:
+    add(f'<circle cx="{x}" cy="{y}" r="{r - 1}" fill="{HAIR}"/>')
+for x, y in [(978, 148), (1006, 142), (1034, 154), (956, 168)]:
+    add(f'<path d="M{x - 8} {y} q8 -8 16 -2" stroke="{HAIR2}" stroke-width="3.5" fill="none" stroke-linecap="round"/>')
+for ex in (983, 1017):
+    add(f'<g transform="translate({ex} 211)"><g class="blink" style="animation-delay:-1.6s"><ellipse rx="9.5" ry="12" fill="#fff"/><ellipse cx="0.5" cy="1" rx="7.6" ry="10.4" fill="url(#iris2)"/><ellipse cx="0.5" cy="2" rx="3.6" ry="5.6" fill="#0d0608"/><circle cx="-3" cy="-3.5" r="3.2" fill="#fff"/><circle cx="3.5" cy="5" r="1.6" fill="#fff" opacity=".9"/></g><path d="M-10.5 -4 Q0 -16 10.5 -4" stroke="#07060f" stroke-width="3.4" fill="none" stroke-linecap="round"/></g>')
+add(f'<path d="M970 194 Q983 187 995 192 M1005 192 Q1017 187 1030 194" stroke="{HAIR}" stroke-width="4" stroke-linecap="round" fill="none"/>')
+add(f'<path d="M997 222 q3 3.5 6 0" stroke="{SK2}" stroke-width="2.4" fill="none" stroke-linecap="round"/>')
+add(f'<ellipse cx="968" cy="226" rx="8" ry="4.5" fill="#e0735f" opacity=".35"/><ellipse cx="1032" cy="226" rx="8" ry="4.5" fill="#e0735f" opacity=".35"/>')
+add(f'<path d="M987 231 Q994 227 1000 230 Q1006 227 1013 231 Q1006 235 1000 233 Q994 235 987 231Z" fill="{HAIR}"/>')
+add('<path d="M991 239 Q1000 247 1009 239" stroke="#6b2d2d" stroke-width="2.8" fill="none" stroke-linecap="round"/>')
+add(f'<ellipse cx="1000" cy="252" rx="5.5" ry="4" fill="{HAIR}" opacity=".9"/>')
+add('</g></g></g>')
 add('</g>')  # fin .bob personnage
 
-# bulle + push
-add('<g class="float"><rect x="800" y="118" width="132" height="36" rx="18" fill="#0b1240" stroke="#22d3ee" stroke-width="2.5"/><path d="M910 154 l18 22 l-4 -24z" fill="#0b1240" stroke="#22d3ee" stroke-width="2.5" stroke-linejoin="round"/><rect x="908" y="150" width="14" height="6" fill="#0b1240"/>')
-add('<text x="866" y="141" text-anchor="middle" font-size="14" font-weight="800" fill="#e8f1ff">docker push <tspan fill="#4ade80">✓</tspan></text></g>')
+# bulle : la commande que tape Rynah
+add('<g class="float"><rect x="900" y="46" width="248" height="36" rx="18" fill="#0b1240" stroke="#22d3ee" stroke-width="2.5"/><path d="M986 81 l14 24 l8 -24z" fill="#0b1240" stroke="#22d3ee" stroke-width="2.5" stroke-linejoin="round"/><rect x="984" y="77" width="26" height="6" fill="#0b1240"/>')
+add('<text x="1024" y="69" text-anchor="middle" font-size="13" font-weight="800" fill="#e8f1ff"><tspan fill="#4ade80">$</tspan> docker push rynah/ecommerce <tspan fill="#4ade80">✓</tspan></text></g>')
 add('<path class="march" d="M926 296 C880 300 842 262 808 214" stroke="#22d3ee" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="1 10" fill="none"/>')
-add('<g class="fly"><g transform="rotate(-24)"><rect x="-26" y="-13" width="52" height="26" rx="3" fill="#4ade80" stroke="#0a1244" stroke-width="2.2"/><text y="5" text-anchor="middle" font-size="12" font-weight="800" fill="#07102b">v2.0</text></g></g>')
-add('<g transform="translate(808 214) scale(1.7)"><path class="arrive" d="M0 -9 Q0.8 -0.8 9 0 Q0.8 0.8 0 9 Q-0.8 0.8 -9 0 Q-0.8 -0.8 0 -9Z" fill="#fff"/></g>')
+# deux images poussées en alternance vers Docker Hub (les vraies : frontend et backend de l'e-commerce)
+for label, d in (("front_end", 0), ("back_end", -2)):
+    add(f'<g class="fly" style="animation-delay:{d}s"><g transform="rotate(-24)"><rect x="-36" y="-14" width="72" height="28" rx="3" fill="#4ade80" stroke="#0a1244" stroke-width="2.2"/><text y="4.5" text-anchor="middle" font-size="12" font-weight="800" fill="#07102b">{label}</text></g></g>')
+    add(f'<g transform="translate(808 214) scale(1.7)"><path class="arrive" style="animation-delay:{d}s" d="M0 -9 Q0.8 -0.8 9 0 Q0.8 0.8 0 9 Q-0.8 0.8 -9 0 Q-0.8 -0.8 0 -9Z" fill="#fff"/></g>')
 
 # eau avant : les vagues défilent (120 et 160 px par boucle = motif entier)
 n1 = "q30 -13 60 0 t60 0 " * 11
